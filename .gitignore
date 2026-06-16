@@ -1,0 +1,12 @@
+.env
+emails.csv
+credentials.json
+token.json
+.tmp/
+.venv/
+images/
+__pycache__/
+*.pyc
+.DS_Store
+*.af
+*.af~lock~
