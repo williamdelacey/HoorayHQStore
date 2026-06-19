@@ -2,15 +2,17 @@ import Stripe from 'stripe';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    httpClient: Stripe.createFetchHttpClient(),
-  });
 
   const payload = await request.text();
   const sig = request.headers.get('Stripe-Signature');
 
+  let stripe;
   let event;
   try {
+    if (!env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not configured');
+    stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+      httpClient: Stripe.createFetchHttpClient(),
+    });
     const cryptoProvider = Stripe.createSubtleCryptoProvider();
     event = await stripe.webhooks.constructEventAsync(
       payload,

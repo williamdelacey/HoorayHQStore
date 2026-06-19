@@ -2,11 +2,13 @@ import Stripe from 'stripe';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    httpClient: Stripe.createFetchHttpClient(),
-  });
 
   try {
+    if (!env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not configured');
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+      httpClient: Stripe.createFetchHttpClient(),
+    });
+
     const data = await request.json();
     const items = data.items || [];
     const customer = data.customer || {};
