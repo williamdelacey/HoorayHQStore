@@ -18,17 +18,35 @@ export async function onRequestPost(context) {
       throw new Error('Missing items or customer email');
     }
 
-    const lineItems = items.map((item) => ({
-      price_data: {
-        currency: 'nzd',
-        product_data: {
-          name: `${item.name} ${item.subtitle || ''}`.trim(),
-          description: item.palette || '',
+    // Load the catalogue server-side so prices/names come from the source of
+    // truth (data/products.json), NOT from the browser. This prevents a tampered
+    // request from charging an arbitrary price.
+    const catalogueUrl = new URL('/data/products.json', request.url);
+    const catalogueRes = await fetch(catalogueUrl.toString());
+    if (!catalogueRes.ok) throw new Error('Unable to load product catalogue');
+    const catalogue = await catalogueRes.json();
+    const productsById = {};
+    for (const p of [...(catalogue.grabAndGo || []), ...(catalogue.diyKits || [])]) {
+      productsById[p.id] = p;
+    }
+
+    const lineItems = items.map((item) => {
+      const product = productsById[item.id];
+      if (!product) {
+        throw new Error(`Unknown product: ${item.id}`);
+      }
+      return {
+        price_data: {
+          currency: 'nzd',
+          product_data: {
+            name: `${product.name} ${product.subtitle || ''}`.trim(),
+            description: item.palette || '',
+          },
+          unit_amount: Math.round(Number(product.price) * 100),
         },
-        unit_amount: Math.round(Number(item.price) * 100),
-      },
-      quantity: Number(item.qty) || 1,
-    }));
+        quantity: Math.max(1, Math.min(Number(item.qty) || 1, 999)),
+      };
+    });
 
     const metadata = {
       customer_name: (customer.name || '').slice(0, 480),

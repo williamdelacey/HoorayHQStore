@@ -768,90 +768,19 @@
 
 <script>
 // ===================== CATALOGUE =====================
-// To add a new SKU: push a new object into CATALOGUE.grabAndGo or CATALOGUE.diyKits
-// To add a colour palette: push a new object into CATALOGUE.palettes
+// The catalogue now lives in data/products.json (single source of truth for
+// both this page and the Stripe checkout function). To add/edit a product or
+// change a price, edit data/products.json — then run:
+//   python3 tools/export_products_csv.py   (refreshes the data/products.csv reference)
+// CATALOGUE is populated by loadCatalogue() before anything renders (see INIT).
 
-const CATALOGUE = {
-  grabAndGo: [
-    {
-      id: 'gag-001',
-      name: 'Mini Garland',
-      subtitle: '1 metre',
-      price: 89,
-      description: 'Perfect for a small accent — a doorway, a table backdrop, or a simple pop of colour.',
-      image: 'images/products/Product Staging-1973000a-99cb-4c64-980f-578da1e10a43.jpg',
-      includes: ['~40 balloons in 3 sizes', 'Garland tape', 'Ready to hang'],
-    },
-    {
-      id: 'gag-002',
-      name: 'Standard Garland',
-      subtitle: '2 metres',
-      price: 149,
-      description: 'Our most popular size. Great for a backdrop, mantelpiece, or party table.',
-      image: 'images/products/IMG_8318 (Product Staging).jpg',
-      includes: ['~80 balloons in 3 sizes', 'Garland tape', 'Hanging strips'],
-    },
-    {
-      id: 'gag-003',
-      name: 'Statement Garland',
-      subtitle: '3 metres',
-      price: 199,
-      description: 'Make a real impact. Fills a full wall, archway, or entrance perfectly.',
-      image: 'images/products/Product Staging-d48c002c-e24f-493f-8277-ea146c4abb49.jpg',
-      includes: ['~120 balloons in 3 sizes', 'Garland tape', 'Hanging strips'],
-    },
-    {
-      id: 'gag-004',
-      name: 'Arch Garland',
-      subtitle: '4 metres',
-      price: 269,
-      description: 'Go big. A full arch or long sweeping garland that becomes the centrepiece of any event.',
-      image: 'images/products/Product Staging-9d68d698-ada3-4b0c-82ef-b3a77f9fe1c4.jpg',
-      includes: ['~160 balloons in 3 sizes', 'Garland tape', 'Hanging strips', 'Frame not included'],
-    },
-  ],
+let CATALOGUE = { grabAndGo: [], diyKits: [], palettes: [] };
 
-  diyKits: [
-    {
-      id: 'diy-001',
-      name: 'Starter Kit',
-      subtitle: '1 metre',
-      price: 49,
-      description: 'First time doing DIY? This is where to start. Everything you need, plus a step-by-step guide.',
-      image: 'images/balloon-garlands/IMG_0287.jpeg',
-      includes: ['~40 balloons (3 sizes)', 'Garland tape', 'Tie tool', 'Command strips', 'How-to guide'],
-    },
-    {
-      id: 'diy-002',
-      name: 'Party Pack',
-      subtitle: '2 metres',
-      price: 79,
-      description: 'Great for a birthday or celebration. Enough to fill a table or mantelpiece nicely.',
-      image: 'images/balloon-garlands/IMG_0473.jpeg',
-      includes: ['~80 balloons (3 sizes)', 'Garland tape', 'Tie tool', 'Command strips', 'How-to guide'],
-    },
-    {
-      id: 'diy-003',
-      name: 'Mega Kit',
-      subtitle: '3 metres',
-      price: 109,
-      description: 'For the ambitious DIY-er. A full three metres of garland tape, balloons, and everything else.',
-      image: 'images/balloon-garlands/IMG_0505.jpeg',
-      includes: ['~120 balloons (3 sizes)', 'Garland tape', 'Tie tool', 'Command strips', 'How-to guide'],
-    },
-  ],
-
-  // To add a new palette: push { id, name, swatches[] } here
-  palettes: [
-    { id: 'classic-pink',  name: 'Classic Pink',  swatches: ['#FFB6C1','#FF69B4','#FFD6E0','#FFFFFF'] },
-    { id: 'neutral-luxe',  name: 'Neutral Luxe',  swatches: ['#F5F0E8','#D4B896','#8B7355','#FFFFFF'] },
-    { id: 'bright-bold',   name: 'Bright & Bold', swatches: ['#FF3B30','#FFCC00','#34C759','#007AFF'] },
-    { id: 'pastels',       name: 'Pastels',        swatches: ['#FFD1DC','#FFECB3','#B5EAD7','#C7CEEA'] },
-    { id: 'black-gold',    name: 'Black & Gold',   swatches: ['#1C1412','#D4A843','#C0C0C0','#FFFFFF'] },
-    { id: 'coral-cream',   name: 'Coral & Cream',  swatches: ['#FC3A3C','#FEDADB','#FAF7F2','#FFFFFF'] },
-    { id: 'custom',        name: 'Custom — contact us', swatches: [] },
-  ],
-};
+async function loadCatalogue() {
+  const res = await fetch('data/products.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to load products.json: ' + res.status);
+  CATALOGUE = await res.json();
+}
 
 // ===================== BLOCKED DATES =====================
 // Add dates here (YYYY-MM-DD) to make them unselectable in the calendar
@@ -1244,7 +1173,7 @@ async function submitCheckout(e) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        items: cart.map(i => ({ name: i.name, subtitle: i.subtitle, price: i.price, qty: i.qty, palette: i.palette.name })),
+        items: cart.map(i => ({ id: i.id, qty: i.qty, palette: i.palette.name })),
         customer: { name: data.name, email: data.email, phone: data.phone },
         fulfilment: currentFulfilment,
         date: data.date,
@@ -1337,7 +1266,12 @@ function toggleFAQ(i) {
 }
 
 // ===================== INIT =====================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await loadCatalogue();
+  } catch (e) {
+    console.error(e);
+  }
   renderProductGrid('gag-product-grid', CATALOGUE.grabAndGo, 'gag');
   renderProductGrid('diy-product-grid', CATALOGUE.diyKits, 'diy');
   renderFAQs();
