@@ -1,0 +1,87 @@
+/* Shared styles for Hooray HQ standalone pages (terms, privacy, blog).
+   Mirrors the brand tokens used in store.html. Blog pages link this as ../pages.css */
+:root {
+  --coral: #fc3a3c;
+  --gold:  #d4a843;
+  --cream: #faf7f2;
+  --teal:  #21a8a1;
+  --dark:  #1c1412;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background-color: var(--cream);
+  font-family: 'Nunito', sans-serif;
+  color: var(--dark);
+  line-height: 1.7;
+}
+.font-display { font-family: 'Luckiest Guy', cursive; letter-spacing: 0.03em; }
+a { color: var(--coral); }
+
+/* Header */
+.site-nav {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,247,242,0.9);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(28,20,18,0.08);
+  padding: 0.875rem 1.5rem;
+}
+.site-nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.site-nav a.logo img { height: 42px; width: auto; display: block; }
+.site-nav .links { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.site-nav .links a {
+  font-size: 0.875rem; font-weight: 600; color: var(--dark); text-decoration: none;
+  padding: 0.4rem 0.7rem; border-radius: 8px; transition: color 0.15s, background 0.15s;
+}
+.site-nav .links a:hover { color: var(--coral); background: rgba(252,58,60,0.06); }
+
+/* Buttons */
+.btn-coral {
+  display: inline-block; background: var(--coral); color: #fff; border: none;
+  border-radius: 12px; padding: 0.7rem 1.4rem; font-family: 'Nunito', sans-serif;
+  font-weight: 700; font-size: 0.95rem; cursor: pointer; text-decoration: none;
+  box-shadow: 0 6px 18px rgba(252,58,60,0.28); transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-coral:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(252,58,60,0.35); }
+
+/* Content container & prose */
+.container { max-width: 760px; margin: 0 auto; padding: 3.5rem 1.5rem 4rem; }
+.container-wide { max-width: 1100px; margin: 0 auto; padding: 3.5rem 1.5rem 4rem; }
+.prose h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 0.5rem; }
+.prose h2 { font-size: 1.4rem; margin: 2.2rem 0 0.6rem; }
+.prose h3 { font-size: 1.1rem; margin: 1.5rem 0 0.4rem; }
+.prose p, .prose li { color: #3a2e2a; }
+.prose ul { padding-left: 1.2rem; }
+.prose li { margin-bottom: 0.4rem; }
+.eyebrow { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--coral); }
+.muted { color: #9b8a82; font-size: 0.9rem; }
+.coral-divider { width: 56px; height: 4px; border-radius: 2px; background: var(--coral); }
+
+/* Blog cards */
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.blog-card {
+  background: #fff; border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit;
+  box-shadow: 0 8px 26px rgba(28,20,18,0.07); transition: transform 0.18s, box-shadow 0.18s;
+  display: flex; flex-direction: column;
+}
+.blog-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(28,20,18,0.12); }
+.blog-card img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.blog-card .body { padding: 1.25rem 1.4rem 1.5rem; }
+.blog-card .tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral); }
+.blog-card h3 { font-size: 1.15rem; margin: 0.4rem 0 0.5rem; }
+.blog-card p { margin: 0; font-size: 0.9rem; color: #6b5a52; }
+
+/* Footer */
+.site-footer { background: var(--dark); color: #fff; padding: 3rem 1.5rem 2rem; margin-top: 2rem; }
+.site-footer-inner { max-width: 1100px; margin: 0 auto; }
+.site-footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
+.site-footer a:hover { color: #fff; }
+.site-footer .bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 2rem; padding-top: 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+@media (max-width: 600px) {
+  .site-nav .links a:not(.btn-coral) { display: none; }
+}

@@ -1,41 +1,118 @@
 {
-  "_comment": "SOURCE OF TRUTH for the store catalogue. Edited by hand here; data/products.csv is a generated reference only (run: python3 tools/export_products_csv.py after editing). Prices here are what Stripe charges.",
+  "_comment": "SOURCE OF TRUTH for the store catalogue. Edited by hand here; data/products.csv is a generated reference only (run: python3 tools/export_products_csv.py after editing). Prices here are what Stripe charges. Schema: 'price' is the base/from price. 'variants' (optional) [{id,label,price}] size options — when present the chosen variant price overrides the base. 'images' [..] is the carousel (first = primary; 'image' mirrors images[0] for cards). 'colourLimit' = how many palette/Tuftex colours the customer may pick. Foil add-ons are universal in the UI (number/letter foil = +$10 unless 'numberLetterFoilIncluded':true where it's included & pre-selected; themed foil = $0, priced later). 'palettes' are preset combos (the 'custom' entry opens the Tuftex picker). 'tuftexColours' [{name,hex}] powers the custom colour picker (sampled from the Tuftex chart).",
   "grabAndGo": [
     {
       "id": "gag-001",
-      "name": "Mini Garland",
-      "subtitle": "1 metre",
-      "price": 89,
-      "description": "Perfect for a small accent — a doorway, a table backdrop, or a simple pop of colour.",
-      "image": "images/products/Product Staging-1973000a-99cb-4c64-980f-578da1e10a43.jpg",
-      "includes": ["~40 balloons in 3 sizes", "Garland tape", "Ready to hang"]
+      "name": "Balloon Garland",
+      "subtitle": "Choose your length",
+      "price": 100,
+      "colourLimit": 3,
+      "variants": [
+        {
+          "id": "1-5m",
+          "label": "1.5 metres",
+          "price": 100
+        },
+        {
+          "id": "2m",
+          "label": "2 metres",
+          "price": 150
+        },
+        {
+          "id": "2-5m",
+          "label": "2.5 metres",
+          "price": 200
+        },
+        {
+          "id": "3m",
+          "label": "3 metres",
+          "price": 250
+        }
+      ],
+      "description": "Our classic colour-customisable garland, priced per cluster. Pick up to three colours and the length to suit your space — the perfect finishing touch behind a party table or backdrop.",
+      "image": "images/products/Balloon Garland/Balloon Garland1.png",
+      "includes": [
+        "Up to 3 colours",
+        "Command strips",
+        "Install instructions"
+      ],
+      "images": [
+        "images/products/Balloon Garland/Balloon Garland1.png",
+        "images/products/Balloon Garland/Balloon Garland2.png"
+      ]
     },
     {
       "id": "gag-002",
-      "name": "Standard Garland",
-      "subtitle": "2 metres",
-      "price": 149,
-      "description": "Our most popular size. Great for a backdrop, mantelpiece, or party table.",
-      "image": "images/products/IMG_8318 (Product Staging).jpg",
-      "includes": ["~80 balloons in 3 sizes", "Garland tape", "Hanging strips"]
+      "name": "Mini Garland",
+      "subtitle": "1m wide",
+      "price": 80,
+      "colourLimit": 2,
+      "description": "A petite garland finished with a foil number or letter — mix and match the birthday star's age or initial. Pick up to two colours.",
+      "image": "images/products/Mini Garland/Mini Garland.jpg",
+      "includes": [
+        "Up to 2 colours",
+        "Foil number or letter included",
+        "Command strips"
+      ],
+      "images": [
+        "images/products/Mini Garland/Mini Garland.jpg"
+      ],
+      "numberLetterFoilIncluded": true
     },
     {
       "id": "gag-003",
-      "name": "Statement Garland",
-      "subtitle": "3 metres",
-      "price": 199,
-      "description": "Make a real impact. Fills a full wall, archway, or entrance perfectly.",
-      "image": "images/products/Product Staging-d48c002c-e24f-493f-8277-ea146c4abb49.jpg",
-      "includes": ["~120 balloons in 3 sizes", "Garland tape", "Hanging strips"]
+      "name": "Freestanding Balloon Garland",
+      "subtitle": "1.8m high",
+      "price": 250,
+      "colourLimit": 3,
+      "description": "A freestanding garland you can place anywhere — behind the party table, beside the entrance, wherever you need a lift. Pick up to three colours and move it wherever you like.",
+      "image": "images/products/Freestanding Balloon Garland/freestandinggarland.jpg",
+      "includes": [
+        "Up to 3 colours",
+        "Freestanding — no wall needed",
+        "Optional foil add-on"
+      ],
+      "images": [
+        "images/products/Freestanding Balloon Garland/freestandinggarland.jpg",
+        "images/products/Freestanding Balloon Garland/freestandinggarland2.jpg"
+      ]
     },
     {
       "id": "gag-004",
-      "name": "Arch Garland",
-      "subtitle": "4 metres",
-      "price": 269,
-      "description": "Go big. A full arch or long sweeping garland that becomes the centrepiece of any event.",
-      "image": "images/products/Product Staging-9d68d698-ada3-4b0c-82ef-b3a77f9fe1c4.jpg",
-      "includes": ["~160 balloons in 3 sizes", "Garland tape", "Hanging strips", "Frame not included"]
+      "name": "Freestanding Mini Column",
+      "subtitle": "1.5m high",
+      "price": 80,
+      "colourLimit": 3,
+      "description": "A freestanding column topped with your choice of number or letter foil. Perfect for the present table or to frame an entrance. Pick up to three colours.",
+      "image": "images/products/Freestanding Mini Column/Mini Column1.jpg",
+      "includes": [
+        "Up to 3 colours",
+        "Foil number or letter included",
+        "Freestanding base"
+      ],
+      "images": [
+        "images/products/Freestanding Mini Column/Mini Column1.jpg",
+        "images/products/Freestanding Mini Column/Mini Column2.jpg"
+      ],
+      "numberLetterFoilIncluded": true
+    },
+    {
+      "id": "gag-005",
+      "name": "Freestanding Arch",
+      "subtitle": "2m × 2m",
+      "price": 200,
+      "colourLimit": 3,
+      "description": "A freestanding arch to frame your celebration — a true statement piece you can position wherever you need it. Pick up to three colours.",
+      "image": "images/products/Freestanding Arch/Arch1.jpg",
+      "includes": [
+        "Up to 3 colours",
+        "Freestanding — no wall needed",
+        "Optional foil add-on"
+      ],
+      "images": [
+        "images/products/Freestanding Arch/Arch1.jpg",
+        "images/products/Freestanding Arch/Arch2.jpg"
+      ]
     }
   ],
   "diyKits": [
@@ -46,7 +123,13 @@
       "price": 49,
       "description": "First time doing DIY? This is where to start. Everything you need, plus a step-by-step guide.",
       "image": "images/balloon-garlands/IMG_0287.jpeg",
-      "includes": ["~40 balloons (3 sizes)", "Garland tape", "Tie tool", "Command strips", "How-to guide"]
+      "includes": [
+        "~40 balloons (3 sizes)",
+        "Garland tape",
+        "Tie tool",
+        "Command strips",
+        "How-to guide"
+      ]
     },
     {
       "id": "diy-002",
@@ -55,7 +138,13 @@
       "price": 79,
       "description": "Great for a birthday or celebration. Enough to fill a table or mantelpiece nicely.",
       "image": "images/balloon-garlands/IMG_0473.jpeg",
-      "includes": ["~80 balloons (3 sizes)", "Garland tape", "Tie tool", "Command strips", "How-to guide"]
+      "includes": [
+        "~80 balloons (3 sizes)",
+        "Garland tape",
+        "Tie tool",
+        "Command strips",
+        "How-to guide"
+      ]
     },
     {
       "id": "diy-003",
@@ -64,16 +153,382 @@
       "price": 109,
       "description": "For the ambitious DIY-er. A full three metres of garland tape, balloons, and everything else.",
       "image": "images/balloon-garlands/IMG_0505.jpeg",
-      "includes": ["~120 balloons (3 sizes)", "Garland tape", "Tie tool", "Command strips", "How-to guide"]
+      "includes": [
+        "~120 balloons (3 sizes)",
+        "Garland tape",
+        "Tie tool",
+        "Command strips",
+        "How-to guide"
+      ]
     }
   ],
   "palettes": [
-    { "id": "classic-pink", "name": "Classic Pink", "swatches": ["#FFB6C1", "#FF69B4", "#FFD6E0", "#FFFFFF"] },
-    { "id": "neutral-luxe", "name": "Neutral Luxe", "swatches": ["#F5F0E8", "#D4B896", "#8B7355", "#FFFFFF"] },
-    { "id": "bright-bold", "name": "Bright & Bold", "swatches": ["#FF3B30", "#FFCC00", "#34C759", "#007AFF"] },
-    { "id": "pastels", "name": "Pastels", "swatches": ["#FFD1DC", "#FFECB3", "#B5EAD7", "#C7CEEA"] },
-    { "id": "black-gold", "name": "Black & Gold", "swatches": ["#1C1412", "#D4A843", "#C0C0C0", "#FFFFFF"] },
-    { "id": "coral-cream", "name": "Coral & Cream", "swatches": ["#FC3A3C", "#FEDADB", "#FAF7F2", "#FFFFFF"] },
-    { "id": "custom", "name": "Custom — contact us", "swatches": [] }
+    {
+      "id": "classic-pink",
+      "name": "Classic Pink",
+      "swatches": [
+        "#FFB6C1",
+        "#FF69B4",
+        "#FFD6E0",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "id": "neutral-luxe",
+      "name": "Neutral Luxe",
+      "swatches": [
+        "#F5F0E8",
+        "#D4B896",
+        "#8B7355",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "id": "bright-bold",
+      "name": "Bright & Bold",
+      "swatches": [
+        "#FF3B30",
+        "#FFCC00",
+        "#34C759",
+        "#007AFF"
+      ]
+    },
+    {
+      "id": "pastels",
+      "name": "Pastels",
+      "swatches": [
+        "#FFD1DC",
+        "#FFECB3",
+        "#B5EAD7",
+        "#C7CEEA"
+      ]
+    },
+    {
+      "id": "black-gold",
+      "name": "Black & Gold",
+      "swatches": [
+        "#1C1412",
+        "#D4A843",
+        "#C0C0C0",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "id": "coral-cream",
+      "name": "Coral & Cream",
+      "swatches": [
+        "#FC3A3C",
+        "#FEDADB",
+        "#FAF7F2",
+        "#FFFFFF"
+      ]
+    },
+    {
+      "id": "custom",
+      "name": "Choose your own",
+      "swatches": []
+    }
+  ],
+  "tuftexColours": [
+    {
+      "name": "Cameo",
+      "hex": "#eacfcc"
+    },
+    {
+      "name": "Romey (P)",
+      "hex": "#eec9cc"
+    },
+    {
+      "name": "Baby Pink",
+      "hex": "#eebecc"
+    },
+    {
+      "name": "Shimmering Pink (M)",
+      "hex": "#eabac9"
+    },
+    {
+      "name": "Pink",
+      "hex": "#edc0cd"
+    },
+    {
+      "name": "Canyon Rose",
+      "hex": "#cca3b7"
+    },
+    {
+      "name": "Coral",
+      "hex": "#ea9096"
+    },
+    {
+      "name": "Taffy",
+      "hex": "#e36c82"
+    },
+    {
+      "name": "Pixie",
+      "hex": "#c3528f"
+    },
+    {
+      "name": "Hot Pink",
+      "hex": "#d4468b"
+    },
+    {
+      "name": "Fuchsia (M)",
+      "hex": "#cb2976"
+    },
+    {
+      "name": "Magenta (C)",
+      "hex": "#cc317c"
+    },
+    {
+      "name": "Burgundy (C)",
+      "hex": "#952f58"
+    },
+    {
+      "name": "Sangria",
+      "hex": "#895161"
+    },
+    {
+      "name": "Samba",
+      "hex": "#804d56"
+    },
+    {
+      "name": "Red",
+      "hex": "#db3f55"
+    },
+    {
+      "name": "Crystal Red (C)",
+      "hex": "#ce4e54"
+    },
+    {
+      "name": "Starfire Red (M)",
+      "hex": "#ba3652"
+    },
+    {
+      "name": "Aloha",
+      "hex": "#d7625c"
+    },
+    {
+      "name": "Rose Gold (M)",
+      "hex": "#e7a18f"
+    },
+    {
+      "name": "Burnt Orange",
+      "hex": "#c67e5d"
+    },
+    {
+      "name": "Orange",
+      "hex": "#e98950"
+    },
+    {
+      "name": "Cheeky",
+      "hex": "#f5c9b1"
+    },
+    {
+      "name": "Lemonade",
+      "hex": "#ededa6"
+    },
+    {
+      "name": "Crystal Yellow (C)",
+      "hex": "#f0ea61"
+    },
+    {
+      "name": "Yellow",
+      "hex": "#f8e563"
+    },
+    {
+      "name": "Goldenrod",
+      "hex": "#f0d366"
+    },
+    {
+      "name": "Mustard",
+      "hex": "#e0b63e"
+    },
+    {
+      "name": "Gold (M)",
+      "hex": "#c79032"
+    },
+    {
+      "name": "Blush",
+      "hex": "#f5e2c3"
+    },
+    {
+      "name": "Lime Green",
+      "hex": "#89c163"
+    },
+    {
+      "name": "Fiona",
+      "hex": "#8bad54"
+    },
+    {
+      "name": "Green",
+      "hex": "#66a552"
+    },
+    {
+      "name": "Metallic Green (M)",
+      "hex": "#62a24d"
+    },
+    {
+      "name": "Emerald (C)",
+      "hex": "#228750"
+    },
+    {
+      "name": "Forest Green (M)",
+      "hex": "#31714a"
+    },
+    {
+      "name": "Evergreen",
+      "hex": "#5a7f6f"
+    },
+    {
+      "name": "Willow",
+      "hex": "#88a699"
+    },
+    {
+      "name": "Meadow (P)",
+      "hex": "#bad0ae"
+    },
+    {
+      "name": "Empower-Mint",
+      "hex": "#b6caba"
+    },
+    {
+      "name": "Metallic Teal (M)",
+      "hex": "#339296"
+    },
+    {
+      "name": "Teal",
+      "hex": "#3fb5ab"
+    },
+    {
+      "name": "Sea Glass",
+      "hex": "#98d2dc"
+    },
+    {
+      "name": "Seafoam (M)",
+      "hex": "#66bfbb"
+    },
+    {
+      "name": "Turquoise",
+      "hex": "#37aac3"
+    },
+    {
+      "name": "Monet",
+      "hex": "#cedde8"
+    },
+    {
+      "name": "Baby Blue",
+      "hex": "#a4cee0"
+    },
+    {
+      "name": "Georgia (P)",
+      "hex": "#85b0ca"
+    },
+    {
+      "name": "Blue Slate",
+      "hex": "#97b2bb"
+    },
+    {
+      "name": "Blue",
+      "hex": "#65b0d5"
+    },
+    {
+      "name": "Metallic Blue (M)",
+      "hex": "#376aa5"
+    },
+    {
+      "name": "Sapphire Blue (C)",
+      "hex": "#275682"
+    },
+    {
+      "name": "Navy",
+      "hex": "#375b7b"
+    },
+    {
+      "name": "Naval",
+      "hex": "#284762"
+    },
+    {
+      "name": "Midnight Blue (M)",
+      "hex": "#243a5a"
+    },
+    {
+      "name": "Peri",
+      "hex": "#5e629d"
+    },
+    {
+      "name": "Blossom",
+      "hex": "#b8aeca"
+    },
+    {
+      "name": "Lavender",
+      "hex": "#a682ae"
+    },
+    {
+      "name": "Plum Purple",
+      "hex": "#5a2b79"
+    },
+    {
+      "name": "Crystal Purple (C)",
+      "hex": "#522a6d"
+    },
+    {
+      "name": "Clear (C)",
+      "hex": "#eef0f0"
+    },
+    {
+      "name": "White",
+      "hex": "#f7f5f0"
+    },
+    {
+      "name": "Sugar (P)",
+      "hex": "#e8e1da"
+    },
+    {
+      "name": "Frog",
+      "hex": "#c9d4d5"
+    },
+    {
+      "name": "Silver (M)",
+      "hex": "#9a9c99"
+    },
+    {
+      "name": "Gray Smoke",
+      "hex": "#898c8b"
+    },
+    {
+      "name": "Black",
+      "hex": "#232422"
+    },
+    {
+      "name": "Lace (P)",
+      "hex": "#f5f2e1"
+    },
+    {
+      "name": "Stone",
+      "hex": "#d3cebe"
+    },
+    {
+      "name": "Malted",
+      "hex": "#a29b8b"
+    },
+    {
+      "name": "Cocoa",
+      "hex": "#98806e"
+    },
+    {
+      "name": "Rockstar effects",
+      "hex": "#a94c6d"
+    },
+    {
+      "name": "Golden effects",
+      "hex": "#bdad72"
+    },
+    {
+      "name": "Silvery effects",
+      "hex": "#c4c5c1"
+    },
+    {
+      "name": "Shadow effects",
+      "hex": "#292c2b"
+    }
   ]
 }

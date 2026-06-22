@@ -221,6 +221,54 @@
     }
     .palette-card:hover { background: rgba(252,58,60,0.05); }
     .palette-card.selected { border-color: var(--coral); background: rgba(252,58,60,0.05); }
+    /* Size selector */
+    .size-btn {
+      border: 2px solid rgba(28,20,18,0.12);
+      border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      background: rgba(255,255,255,0.7);
+      cursor: pointer; text-align: center;
+      font-family: 'Nunito', sans-serif; color: var(--dark);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .size-btn:hover { border-color: rgba(252,58,60,0.4); }
+    .size-btn.selected { border-color: var(--coral); background: rgba(252,58,60,0.06); }
+    /* Carousel */
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,0.85); border: none; cursor: pointer;
+      align-items: center; justify-content: center; display: flex;
+      font-size: 1.5rem; line-height: 1; color: var(--dark);
+      box-shadow: 0 2px 10px rgba(28,20,18,0.2); z-index: 2;
+      transition: background 0.15s;
+    }
+    .carousel-arrow:hover { background: #fff; }
+    /* Tuftex custom colour picker */
+    .tuftex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+      gap: 6px;
+    }
+    .tuftex-swatch {
+      aspect-ratio: 1; border-radius: 50%;
+      border: 2px solid rgba(28,20,18,0.12); cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .tuftex-swatch:hover { transform: scale(1.12); }
+    .tuftex-swatch.selected { border-color: var(--dark); border-width: 3px; transform: scale(1.06); }
+    .tuftex-check { color: #fff; font-size: 0.85rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    /* Add-on rows (foil) */
+    .addon-row {
+      display: flex; gap: 0.7rem; align-items: flex-start;
+      border: 1.5px solid rgba(28,20,18,0.12); border-radius: 12px;
+      padding: 0.8rem 0.9rem; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .addon-row:hover { border-color: rgba(252,58,60,0.35); }
+    .addon-row input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--coral); cursor: pointer; flex-shrink: 0; }
+    .addon-row input[type="checkbox"]:disabled { cursor: default; }
     /* Qty control */
     .qty-btn {
       width: 32px; height: 32px; border-radius: 8px;
@@ -240,6 +288,11 @@
     }
     .nav-link:hover { color: var(--coral); background: rgba(252,58,60,0.06); }
     .nav-link.active { color: var(--coral); }
+    /* Mobile menu */
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.35rem; color: var(--dark); align-items: center; justify-content: center; }
+    #mobile-menu { flex-direction: column; gap: 0.1rem; padding: 0.5rem 1.5rem 1.1rem; border-top: 1px solid rgba(28,20,18,0.08); }
+    .mobile-link { display: block; padding: 0.75rem 0.25rem; font-weight: 600; color: var(--dark); cursor: pointer; border-bottom: 1px solid rgba(28,20,18,0.06); text-decoration: none; transition: color 0.15s; }
+    .mobile-link:hover { color: var(--coral); }
     /* Fulfilment toggle */
     .toggle-btn {
       flex: 1; padding: 0.65rem; border-radius: 10px;
@@ -284,14 +337,23 @@
 <!-- ===================== PRODUCT MODAL ===================== -->
 <div class="modal-backdrop" id="product-modal" style="display:none;" onclick="handleModalBackdropClick(event)">
   <div class="modal-box" id="modal-content">
-    <div style="position:relative;">
-      <img id="modal-img" src="" alt="" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px 20px 0 0;" />
-      <button onclick="closeModal()" style="position:absolute;top:1rem;right:1rem;background:rgba(28,20,18,0.6);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:1.2rem;line-height:1;">×</button>
+    <div style="position:relative;aspect-ratio:16/9;border-radius:20px 20px 0 0;overflow:hidden;background:#efe9e2;">
+      <img id="modal-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
+      <button id="carousel-prev" onclick="carouselMove(-1)" class="carousel-arrow" style="left:10px;display:none;">‹</button>
+      <button id="carousel-next" onclick="carouselMove(1)" class="carousel-arrow" style="right:10px;display:none;">›</button>
+      <div id="modal-dots" style="position:absolute;bottom:12px;left:0;right:0;display:flex;gap:6px;justify-content:center;"></div>
+      <button onclick="closeModal()" style="position:absolute;top:1rem;right:1rem;background:rgba(28,20,18,0.6);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:1.2rem;line-height:1;z-index:2;">×</button>
     </div>
     <div style="padding:1.5rem;">
       <div id="modal-body"></div>
     </div>
   </div>
+</div>
+
+<!-- ===================== GALLERY LIGHTBOX ===================== -->
+<div class="modal-backdrop" id="lightbox" style="display:none;" onclick="closeLightbox(event)">
+  <button onclick="closeLightbox(event)" aria-label="Close" style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(28,20,18,0.55);border:none;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:1.4rem;line-height:1;z-index:2;">×</button>
+  <img id="lightbox-img" src="" alt="Balloon display" style="max-width:92vw;max-height:88vh;object-fit:contain;border-radius:14px;box-shadow:0 24px 60px rgba(28,20,18,0.45);" />
 </div>
 
 <!-- ===================== NAV ===================== -->
@@ -305,12 +367,13 @@
     <div style="display:flex;gap:0.25rem;align-items:center;" class="desktop-nav">
       <span class="nav-link" onclick="navigate('home')">Home</span>
       <span class="nav-link" onclick="navigate('grab-and-go')">Grab & Go</span>
-      <span class="nav-link" onclick="navigate('diy-kits')">DIY Kits</span>
-      <span class="nav-link" onclick="navigate('custom')">Custom Install</span>
-      <span class="nav-link" onclick="navigate('home'); setTimeout(()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}),200)">Contact</span>
+      <span class="nav-link" onclick="navigate('custom')">Custom & Themed</span>
+      <span class="nav-link" onclick="goGallery()">Gallery</span>
+      <a class="nav-link" href="blog/index.html">Blog</a>
+      <span class="nav-link" onclick="navigate('contact')">Contact</span>
     </div>
     <!-- Cart + mobile menu -->
-    <div style="display:flex;align-items:center;gap:0.75rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;">
       <button onclick="openCart()" style="position:relative;background:none;border:none;cursor:pointer;padding:0.4rem;" aria-label="Cart">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
@@ -318,7 +381,20 @@
         <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--coral);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:700;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;"></span>
       </button>
       <button class="btn-coral" onclick="navigate('grab-and-go')" style="padding:0.55rem 1.1rem;font-size:0.85rem;display:none;" id="shop-cta-nav">Shop Now</button>
+      <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobile-menu" style="display:none;">
+    <span class="mobile-link" onclick="navigate('home')">Home</span>
+    <span class="mobile-link" onclick="navigate('grab-and-go')">Grab & Go</span>
+    <span class="mobile-link" onclick="navigate('custom')">Custom & Themed</span>
+    <span class="mobile-link" onclick="goGallery()">Gallery</span>
+    <a class="mobile-link" href="blog/index.html">Blog</a>
+    <span class="mobile-link" onclick="navigate('contact')">Contact</span>
+    <button class="btn-coral" onclick="navigate('grab-and-go')" style="margin-top:0.5rem;padding:0.7rem;font-size:0.95rem;">Shop Now</button>
   </div>
 </nav>
 
@@ -339,7 +415,7 @@
           Your moment.<br><span style="color:var(--coral);">Made magic.</span>
         </h1>
         <p style="font-size:clamp(1rem,2.5vw,1.25rem);color:rgba(255,255,255,0.88);margin:0 auto 2.5rem;max-width:520px;line-height:1.65;">
-          Stunning balloon garlands, grab-and-go setups, and DIY kits — ready when you are.
+          Stunning balloon garlands and custom themed installations — ready when you are.
         </p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
           <button class="btn-coral" onclick="navigate('grab-and-go')" style="padding:1rem 2rem;font-size:1rem;">Shop Now</button>
@@ -358,54 +434,38 @@
       <div style="text-align:center;margin-bottom:3rem;">
         <div class="coral-divider" style="margin:0 auto 1rem;"></div>
         <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0 0 0.75rem;">What we offer</h2>
-        <p style="color:#6b5a52;max-width:460px;margin:0 auto;line-height:1.7;">Three ways to make your space shine — all made with care in Auckland.</p>
+        <p style="color:#6b5a52;max-width:460px;margin:0 auto;line-height:1.7;">Two easy ways to make your space shine — all made with care in Whangaparaoa.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
-
-        <!-- Custom Install -->
-        <div class="card" style="padding:0;overflow:hidden;cursor:pointer;" onclick="navigate('custom')">
-          <div style="aspect-ratio:4/3;overflow:hidden;">
-            <img src="images/balloon-garlands/BrooklynBday-196.JPG" alt="Custom Installation" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
-          </div>
-          <div style="padding:1.5rem;">
-            <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom</span>
-            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Custom Installation</h3>
-            <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">We come to you. Full garland design, delivery, and setup — you just show up and enjoy it.</p>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$299</strong></span>
-              <span style="color:var(--coral);font-weight:600;font-size:0.875rem;">Get a quote →</span>
-            </div>
-          </div>
-        </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:840px;margin:0 auto;">
 
         <!-- Grab & Go -->
         <div class="card" style="padding:0;overflow:hidden;cursor:pointer;" onclick="navigate('grab-and-go')">
           <div style="aspect-ratio:4/3;overflow:hidden;">
-            <img src="images/balloon-garlands/IMG_3534.jpeg" alt="Grab and Go" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+            <img src="images/products/Balloon Garland/Balloon Garland1.png" alt="Grab and Go balloon garland" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           </div>
           <div style="padding:1.5rem;">
             <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Ready to go</span>
             <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Grab & Go</h3>
-            <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Pre-made garlands ready for pickup. Choose your size, pick your colours, collect and go.</p>
+            <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Click & collect, but balloons! Pick your colours and size, order online, and collect ready to celebrate.</p>
             <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$89</strong></span>
+              <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$80</strong></span>
               <span style="color:var(--coral);font-weight:600;font-size:0.875rem;">Shop now →</span>
             </div>
           </div>
         </div>
 
-        <!-- DIY Kits -->
-        <div class="card" style="padding:0;overflow:hidden;cursor:pointer;" onclick="navigate('diy-kits')">
+        <!-- Custom & Themed -->
+        <div class="card" style="padding:0;overflow:hidden;cursor:pointer;" onclick="navigate('custom')">
           <div style="aspect-ratio:4/3;overflow:hidden;">
-            <img src="images/balloon-garlands/IMG_0287.jpeg" alt="DIY Kits" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+            <img src="images/balloon-garlands/BrooklynBday-196.JPG" alt="Custom themed installation" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           </div>
           <div style="padding:1.5rem;">
-            <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">DIY</span>
-            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">DIY Kits</h3>
-            <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Everything you need in one box. Balloons, tape, and a guide — your garland, your way.</p>
+            <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom</span>
+            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Custom & Themed</h3>
+            <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Have it how you like it. We design, deliver, and install a statement display tailored to your celebration.</p>
             <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$49</strong></span>
-              <span style="color:var(--coral);font-weight:600;font-size:0.875rem;">Shop now →</span>
+              <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$500</strong></span>
+              <span style="color:var(--coral);font-weight:600;font-size:0.875rem;">Get a quote →</span>
             </div>
           </div>
         </div>
@@ -422,7 +482,7 @@
           <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
             <div class="step-circle">1</div>
             <h3 style="margin:0;font-weight:700;font-size:1.1rem;">Choose your style</h3>
-            <p style="color:#6b5a52;margin:0;line-height:1.65;font-size:0.9rem;">Browse our three categories and pick what suits your event — full install, grab-and-go, or DIY.</p>
+            <p style="color:#6b5a52;margin:0;line-height:1.65;font-size:0.9rem;">Pick a ready-to-collect Grab & Go piece, or request a quote for a fully custom themed installation.</p>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
             <div class="step-circle">2</div>
@@ -443,19 +503,9 @@
       <div style="text-align:center;margin-bottom:3rem;">
         <div class="coral-divider" style="margin:0 auto 1rem;"></div>
         <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0 0 0.75rem;">Our work</h2>
-        <p style="color:#6b5a52;max-width:420px;margin:0 auto;line-height:1.7;">Real garlands, real parties. Every one made with love in Auckland.</p>
+        <p style="color:#6b5a52;max-width:420px;margin:0 auto;line-height:1.7;">Real displays, real parties. Every one made with love in Whangaparaoa. Tap any photo to take a closer look.</p>
       </div>
-      <div class="gallery-grid">
-        <img class="gallery-img" src="images/balloon-garlands/BrooklynBday-170.JPG" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_3534.jpeg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_0287.jpeg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_3765.jpeg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/DSC08129.jpg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_0473.jpeg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_6323.JPG" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_0505.jpeg" alt="Balloon garland" />
-        <img class="gallery-img" src="images/balloon-garlands/IMG_3782.jpeg" alt="Balloon garland" />
-      </div>
+      <div class="gallery-grid" id="gallery-grid"></div>
     </section>
 
     <!-- TESTIMONIALS -->
@@ -465,25 +515,49 @@
           <div class="coral-divider" style="margin:0 auto 1rem;"></div>
           <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0;">Happy customers</h2>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;">
           <div class="card" style="padding:1.5rem;">
             <div style="display:flex;gap:2px;margin-bottom:0.75rem;">★★★★★</div>
-            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"The garland was absolutely stunning — exactly what I had in mind. So easy to deal with and the setup was perfect. Will 100% use again for my next event!"</p>
-            <div style="font-weight:700;font-size:0.875rem;">Sarah M.</div>
-            <div style="font-size:0.8rem;color:#9b8a82;">Birthday party, Red Beach</div>
+            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"Hannah was incredible! She took my vision and absolutely nailed it for my daughter's 1st birthday. Professional, super quick, and gorgeous — we had so many compliments throughout the day. The perfect addition to a special milestone."</p>
+            <div style="font-weight:700;font-size:0.875rem;">Grace</div>
+            <div style="font-size:0.8rem;color:#9b8a82;">1st birthday</div>
           </div>
           <div class="card" style="padding:1.5rem;">
             <div style="display:flex;gap:2px;margin-bottom:0.75rem;">★★★★★</div>
-            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"Ordered a grab-and-go for my daughter's 5th and it was gorgeous. The colours were exactly right and it was so simple to pick up. Huge hit at the party!"</p>
-            <div style="font-weight:700;font-size:0.875rem;">Jessica L.</div>
-            <div style="font-size:0.8rem;color:#9b8a82;">Kids birthday, Orewa</div>
+            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"Absolutely fantastic! Hannah took on our theme and ideas, was prompt with installation, and the display exceeded our expectations — the kids loved it. Highly recommend!"</p>
+            <div style="font-weight:700;font-size:0.875rem;">Del</div>
+            <div style="font-size:0.8rem;color:#9b8a82;">Themed party</div>
           </div>
           <div class="card" style="padding:1.5rem;">
             <div style="display:flex;gap:2px;margin-bottom:0.75rem;">★★★★★</div>
-            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"Used Hooray HQ for our company event and couldn't have been happier. Professional, quick to respond, and the result looked incredible on the day."</p>
-            <div style="font-weight:700;font-size:0.875rem;">Mike R.</div>
-            <div style="font-size:0.8rem;color:#9b8a82;">Corporate event, Auckland CBD</div>
+            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"Hannah was super efficient and created the most amazing balloon backdrop for our Winter Wonderland event! It was right to theme and added so much fun to the entrance — loved by both the kids and their parents."</p>
+            <div style="font-weight:700;font-size:0.875rem;">Emily</div>
+            <div style="font-size:0.8rem;color:#9b8a82;">Winter Wonderland event</div>
           </div>
+          <div class="card" style="padding:1.5rem;">
+            <div style="display:flex;gap:2px;margin-bottom:0.75rem;">★★★★★</div>
+            <p style="margin:0 0 1rem;line-height:1.75;color:#3a2e2a;font-style:italic;">"My daughter went to her friend's birthday party and she was obsessed — couldn't stop talking about the disco ball balloons for days afterwards. She had such an amazing time celebrating her bestie!"</p>
+            <div style="font-weight:700;font-size:0.875rem;">Jennie</div>
+            <div style="font-size:0.8rem;color:#9b8a82;">Kids birthday</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT HANNAH -->
+    <section style="padding:5rem 1.5rem;max-width:1100px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:0.85fr 1fr;gap:3rem;align-items:center;" class="about-grid">
+        <div style="position:relative;max-width:380px;margin:0 auto;">
+          <img src="images/hannah-portrait.jpg" alt="Hannah, the face behind Hooray HQ" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 45px rgba(252,58,60,0.15);" />
+          <div style="position:absolute;bottom:-14px;right:-14px;background:var(--coral);color:#fff;font-family:'Luckiest Guy',cursive;font-size:0.9rem;letter-spacing:0.03em;padding:0.55rem 1rem;border-radius:12px;box-shadow:0 8px 20px rgba(252,58,60,0.35);transform:rotate(-3deg);">Hooray!</div>
+        </div>
+        <div>
+          <div class="coral-divider" style="margin:0 0 1rem;"></div>
+          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Our story</span>
+          <h2 class="font-display" style="font-size:clamp(2rem,5vw,2.75rem);margin:0 0 1rem;">Hi, I'm Hannah!</h2>
+          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">The face behind Hooray HQ. For years I've had the privilege of working with youth centres and churches, creating fun, inviting spaces for kids and young people — I've always loved finding ways to bring excitement and energy to a room.</p>
+          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">Since having my own kids, I've loved creating special celebrations for them and their friends — dreaming up backdrops and oversized garlands that make them walk in and think, <em>"Wow, this is the best day ever!"</em></p>
+          <p style="color:#6b5a52;line-height:1.8;margin:0;">That love for celebrating life's special moments inspired me to start Hooray HQ. My hope is to help make your celebration feel that little bit more elevated — because the moments that matter most are worth <strong style="color:var(--coral);">HOORAY</strong>-ing about.</p>
         </div>
       </div>
     </section>
@@ -506,11 +580,12 @@
             <p style="color:rgba(255,255,255,0.65);line-height:1.7;font-size:0.9rem;margin:0;">Parties made easy, memories made bright.<br>Whangaparaoa, Auckland, NZ</p>
           </div>
           <div>
-            <h4 style="font-family:'Luckiest Guy',cursive;font-size:1rem;margin:0 0 1rem;letter-spacing:0.05em;color:rgba(255,255,255,0.5);text-transform:uppercase;">Shop</h4>
+            <h4 style="font-family:'Luckiest Guy',cursive;font-size:1rem;margin:0 0 1rem;letter-spacing:0.05em;color:rgba(255,255,255,0.5);text-transform:uppercase;">Explore</h4>
             <div style="display:flex;flex-direction:column;gap:0.5rem;">
               <span onclick="navigate('grab-and-go')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Grab & Go</span>
-              <span onclick="navigate('diy-kits')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">DIY Kits</span>
-              <span onclick="navigate('custom')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Custom Installation</span>
+              <span onclick="navigate('custom')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Custom & Themed</span>
+              <a href="blog/index.html" style="color:rgba(255,255,255,0.75);font-size:0.9rem;text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Blog</a>
+              <span onclick="navigate('contact')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Contact</span>
             </div>
           </div>
           <div>
@@ -523,7 +598,11 @@
         </div>
         <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
           <p style="margin:0;font-size:0.8rem;color:rgba(255,255,255,0.4);">© 2026 Hooray HQ. All rights reserved.</p>
-          <p style="margin:0;font-size:0.8rem;color:rgba(255,255,255,0.4);">Made with love in Whangaparaoa 🎈</p>
+          <div style="display:flex;gap:1.25rem;align-items:center;">
+            <a href="terms.html" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Terms</a>
+            <a href="privacy.html" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Privacy</a>
+            <p style="margin:0;font-size:0.8rem;color:rgba(255,255,255,0.4);">Made with love in Whangaparaoa 🎈</p>
+          </div>
         </div>
       </div>
     </footer>
@@ -536,27 +615,35 @@
       <button onclick="navigate('home')" style="background:none;border:none;cursor:pointer;color:#9b8a82;font-family:'Nunito',sans-serif;font-size:0.875rem;padding:0;display:flex;align-items:center;gap:0.4rem;margin-bottom:2rem;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='#9b8a82'">
         ← Back to home
       </button>
-      <div style="margin-bottom:3rem;">
+      <div style="margin-bottom:2.5rem;">
         <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Ready to go</span>
-        <h1 class="font-display" style="font-size:clamp(2.5rem,6vw,4rem);margin:0 0 0.75rem;">Grab & Go Garlands</h1>
-        <p style="color:#6b5a52;max-width:560px;line-height:1.7;margin:0;">Pre-made balloon garlands ready for pickup. Choose your size, pick your colour palette, and we'll have it ready. Just collect and go.</p>
+        <h1 class="font-display" style="font-size:clamp(2.5rem,6vw,4rem);margin:0 0 0.75rem;">Grab &amp; Go</h1>
+        <p style="color:#6b5a52;max-width:560px;line-height:1.7;margin:0;">Think click &amp; collect, but balloons! Fuss-free styling with no complex install — pick your colours, choose your size, and collect ready to celebrate.</p>
       </div>
-      <div id="gag-product-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;"></div>
-    </div>
-  </div>
+      <div id="gag-product-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;margin-bottom:3rem;"></div>
 
-  <!-- =========== DIY KITS VIEW =========== -->
-  <div id="view-diy-kits" style="display:none;min-height:80vh;padding:3rem 1.5rem 5rem;">
-    <div style="max-width:1200px;margin:0 auto;">
-      <button onclick="navigate('home')" style="background:none;border:none;cursor:pointer;color:#9b8a82;font-family:'Nunito',sans-serif;font-size:0.875rem;padding:0;display:flex;align-items:center;gap:0.4rem;margin-bottom:2rem;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='#9b8a82'">
-        ← Back to home
-      </button>
-      <div style="margin-bottom:3rem;">
-        <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">DIY</span>
-        <h1 class="font-display" style="font-size:clamp(2.5rem,6vw,4rem);margin:0 0 0.75rem;">DIY Balloon Kits</h1>
-        <p style="color:#6b5a52;max-width:560px;line-height:1.7;margin:0;">Everything you need in one kit — balloons in three sizes, garland tape, a tie tool, and hanging strips. Includes our step-by-step guide. Takes about an hour.</p>
+      <!-- Good to know -->
+      <div class="card" style="padding:1.75rem 2rem;background:rgba(252,58,60,0.04);">
+        <h3 class="font-display" style="font-size:1.3rem;margin:0 0 1.25rem;">Good to know</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem 2rem;">
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+            <span style="font-size:1.25rem;line-height:1;">🚗</span>
+            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Bring a big enough car — an SUV with the seats down does the trick for transporting your balloons.</p>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+            <span style="font-size:1.25rem;line-height:1;">📋</span>
+            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Comes with command strips and simple instructions so you can pop it up wherever you like.</p>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+            <span style="font-size:1.25rem;line-height:1;">🚚</span>
+            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Prefer it delivered? We'll do our best — just ask at checkout. Like any balloon-uber, a small fee applies.</p>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+            <span style="font-size:1.25rem;line-height:1;">🎨</span>
+            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Want a particular theme or extra flair? <span onclick="navigate('custom')" style="color:var(--coral);font-weight:600;cursor:pointer;">Send us a message</span> and we'll quote a custom piece.</p>
+          </div>
+        </div>
       </div>
-      <div id="diy-product-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;"></div>
     </div>
   </div>
 
@@ -568,21 +655,21 @@
       </button>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="custom-grid">
         <div>
-          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom</span>
-          <h1 class="font-display" style="font-size:clamp(2rem,5vw,3.5rem);margin:0 0 1rem;">Custom Installation</h1>
-          <p style="color:#6b5a52;line-height:1.75;margin:0 0 1.5rem;">We come to you. Tell us your vision and we'll design, deliver, and set up a stunning garland that makes your space look incredible.</p>
+          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom &amp; Themed</span>
+          <h1 class="font-display" style="font-size:clamp(2rem,5vw,3.5rem);margin:0 0 1rem;">Have it how you like it</h1>
+          <p style="color:#6b5a52;line-height:1.75;margin:0 0 1.5rem;">Custom garlands, themed event styling, and oversized statement installations designed to make your celebration unforgettable — from birthdays and baby showers to grand openings and anniversaries. Tell us your vision and we'll bring it to life.</p>
           <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;">
               <div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;"></div>
-              <span style="font-size:0.9rem;color:#3a2e2a;">Full design consultation</span>
+              <span style="font-size:0.9rem;color:#3a2e2a;">Minimum spend $500</span>
             </div>
             <div style="display:flex;align-items:center;gap:0.75rem;">
               <div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;"></div>
-              <span style="font-size:0.9rem;color:#3a2e2a;">Delivery &amp; professional setup</span>
+              <span style="font-size:0.9rem;color:#3a2e2a;">Every custom order delivered &amp; installed</span>
             </div>
             <div style="display:flex;align-items:center;gap:0.75rem;">
               <div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;"></div>
-              <span style="font-size:0.9rem;color:#3a2e2a;">Any size, any colour palette</span>
+              <span style="font-size:0.9rem;color:#3a2e2a;">50% deposit secures your date</span>
             </div>
             <div style="display:flex;align-items:center;gap:0.75rem;">
               <div style="width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0;"></div>
@@ -592,13 +679,13 @@
           <div class="card" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;">
             <span style="font-size:1.5rem;">💬</span>
             <div>
-              <strong style="display:block;font-size:0.9rem;">Quote within 24 hours</strong>
-              <span style="font-size:0.8rem;color:#9b8a82;">Starting from $299 — price depends on garland length & complexity</span>
+              <strong style="display:block;font-size:0.9rem;">We'll be in touch soon</strong>
+              <span style="font-size:0.8rem;color:#9b8a82;">Fill out the form and we'll get back to you about planning your celebration.</span>
             </div>
           </div>
         </div>
         <div class="card" style="padding:2rem;" id="custom-form-wrap">
-          <h3 class="font-display" style="font-size:1.4rem;margin:0 0 1.5rem;">Request a quote</h3>
+          <h3 class="font-display" style="font-size:1.4rem;margin:0 0 1.5rem;">Tell us about your celebration</h3>
           <form id="custom-form" onsubmit="submitCustomForm(event)">
             <div style="display:flex;flex-direction:column;gap:1rem;">
               <div>
@@ -616,33 +703,46 @@
                 </div>
               </div>
               <div>
-                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Event date *</label>
-                <input class="field" id="event-date-input" name="event_date" placeholder="Select date" readonly required style="cursor:pointer;" />
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Location / suburb *</label>
+                <input class="field" name="location" type="text" placeholder="Orewa, Albany, Auckland CBD…" required />
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
                 <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Event type</label>
-                  <input class="field" name="event_type" type="text" placeholder="Birthday, wedding…" />
+                  <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Event date *</label>
+                  <input class="field" id="event-date-input" name="event_date" placeholder="Select date" readonly required style="cursor:pointer;" />
                 </div>
                 <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Venue / suburb</label>
-                  <input class="field" name="venue" type="text" placeholder="Orewa, Albany…" />
+                  <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Start time</label>
+                  <input class="field" name="event_time" type="time" />
                 </div>
               </div>
               <div>
-                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Approx. garland length</label>
-                <select class="field" name="garland_length" style="cursor:pointer;">
-                  <option value="">Not sure yet</option>
-                  <option value="1-2m">1–2 metres</option>
-                  <option value="3-4m">3–4 metres</option>
-                  <option value="5-6m">5–6 metres</option>
-                  <option value="7m+">7m+</option>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Budget range *</label>
+                <select class="field" name="budget" style="cursor:pointer;" required>
+                  <option value="">Select a range…</option>
+                  <option value="$500–700">$500–700 — small backdrop &amp; balloon garland</option>
+                  <option value="$700–1200">$700–1200 — medium backdrop &amp; garland</option>
+                  <option value="$1200–1800">$1200–1800 — large installation</option>
+                  <option value="$1800+">$1800+ — best for 2–3 setups or spaces</option>
                 </select>
               </div>
               <div>
-                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Colour preferences / notes</label>
-                <textarea class="field" name="notes" rows="3" placeholder="Pastels, black & gold, matching my theme colours…" style="resize:vertical;"></textarea>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Tell us more about your event</label>
+                <textarea class="field" name="notes" rows="3" placeholder="Theme, colours, what you're picturing, the space…" style="resize:vertical;"></textarea>
               </div>
+              <div>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">How did you hear about us?</label>
+                <select class="field" name="referral" style="cursor:pointer;">
+                  <option value="">Choose one…</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Word of mouth">Word of mouth</option>
+                  <option value="Google">Google search</option>
+                  <option value="Saw our work">Saw our work at an event</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <p style="margin:0;font-size:0.78rem;color:#9b8a82;line-height:1.6;background:rgba(252,58,60,0.04);border-radius:10px;padding:0.75rem 0.9rem;">📸 Got inspo pics? Email them to <a href="mailto:hello@hoorayhq.co.nz" style="color:var(--coral);font-weight:600;text-decoration:none;">hello@hoorayhq.co.nz</a> once you've sent this form.</p>
               <button class="btn-coral" type="submit" style="padding:0.9rem;font-size:1rem;margin-top:0.25rem;" id="custom-submit-btn">Send enquiry</button>
             </div>
           </form>
@@ -650,6 +750,63 @@
             <div style="font-size:2.5rem;margin-bottom:1rem;">🎉</div>
             <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;color:var(--coral);">Enquiry sent!</h3>
             <p style="color:#6b5a52;margin:0;line-height:1.65;">We'll be in touch within 24 hours with your quote. Can't wait to help make your day special!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========== CONTACT VIEW =========== -->
+  <div id="view-contact" style="display:none;min-height:80vh;padding:3rem 1.5rem 5rem;">
+    <div style="max-width:860px;margin:0 auto;">
+      <button onclick="navigate('home')" style="background:none;border:none;cursor:pointer;color:#9b8a82;font-family:'Nunito',sans-serif;font-size:0.875rem;padding:0;display:flex;align-items:center;gap:0.4rem;margin-bottom:2rem;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='#9b8a82'">← Back to home</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="custom-grid">
+        <div>
+          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Say hello</span>
+          <h1 class="font-display" style="font-size:clamp(2rem,5vw,3.5rem);margin:0 0 1rem;">Get in touch</h1>
+          <p style="color:#6b5a52;line-height:1.75;margin:0 0 1.75rem;">Have a question, or want to chat about your celebration? Drop us a message and we'll get right back to you.</p>
+          <div style="display:flex;flex-direction:column;gap:1.1rem;">
+            <div style="display:flex;align-items:center;gap:0.85rem;">
+              <span style="font-size:1.25rem;">✉️</span>
+              <a href="mailto:hello@hoorayhq.co.nz" style="color:var(--dark);font-weight:600;text-decoration:none;font-size:0.95rem;">hello@hoorayhq.co.nz</a>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.85rem;">
+              <span style="font-size:1.25rem;">📷</span>
+              <a href="https://instagram.com/hoorayhq" target="_blank" rel="noopener" style="color:var(--dark);font-weight:600;text-decoration:none;font-size:0.95rem;">@hoorayhq</a>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.85rem;">
+              <span style="font-size:1.25rem;">📍</span>
+              <span style="color:#3a2e2a;font-size:0.95rem;">Whangaparaoa — serving greater Auckland</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.85rem;">
+              <span style="font-size:1.25rem;">🗓️</span>
+              <span style="color:#3a2e2a;font-size:0.95rem;">Pickups Mon, Thu, Fri & Sat</span>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <h3 class="font-display" style="font-size:1.4rem;margin:0 0 1.5rem;">Send us a message</h3>
+          <form id="contact-form" onsubmit="submitContactForm(event)">
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Your name *</label>
+                <input class="field" name="name" type="text" placeholder="Jane Smith" required />
+              </div>
+              <div>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Email *</label>
+                <input class="field" name="email" type="email" placeholder="jane@email.com" required />
+              </div>
+              <div>
+                <label style="font-size:0.8rem;font-weight:600;color:#6b5a52;display:block;margin-bottom:0.4rem;">Message *</label>
+                <textarea class="field" name="message" rows="4" placeholder="How can we help?" required style="resize:vertical;"></textarea>
+              </div>
+              <button class="btn-coral" type="submit" style="padding:0.9rem;font-size:1rem;margin-top:0.25rem;" id="contact-submit-btn">Send message</button>
+            </div>
+          </form>
+          <div id="contact-form-success" style="display:none;text-align:center;padding:2rem 0;">
+            <div style="font-size:2.5rem;margin-bottom:1rem;">💌</div>
+            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;color:var(--coral);">Message sent!</h3>
+            <p style="color:#6b5a52;margin:0;line-height:1.65;">Thanks for reaching out — we'll be in touch soon.</p>
           </div>
         </div>
       </div>
@@ -757,8 +914,9 @@
 @media (max-width: 700px) {
   .custom-grid { grid-template-columns: 1fr !important; }
   .checkout-grid { grid-template-columns: 1fr !important; }
+  .about-grid { grid-template-columns: 1fr !important; }
   .desktop-nav { display: none !important; }
-  #shop-cta-nav { display: flex !important; }
+  .hamburger { display: flex !important; }
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -812,22 +970,24 @@ function formatPrice(n) {
   return '$' + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-function addToCart(product, palette, qty) {
-  const key = product.id + '|' + palette.id;
-  const existing = cart.find(i => i.key === key);
+// Foil add-on pricing (mirrors the server in create-checkout-session.js):
+// number/letter foil = +$10 unless the product includes it; themed foil = $0 (priced later).
+const NUMBER_LETTER_FOIL_PRICE = 10;
+
+// Server-authoritative price is recomputed at checkout; this mirrors it for display.
+function computeUnitPrice(product, variant, foilNLOn) {
+  let price = variant ? Number(variant.price) : Number(product.price);
+  if (foilNLOn && !product.numberLetterFoilIncluded) price += NUMBER_LETTER_FOIL_PRICE;
+  return price;
+}
+
+// addToCart receives a fully-built cart item (see handleAddToCart).
+function addToCart(item) {
+  const existing = cart.find(i => i.key === item.key);
   if (existing) {
-    existing.qty += qty;
+    existing.qty += item.qty;
   } else {
-    cart.push({
-      key,
-      id: product.id,
-      name: product.name,
-      subtitle: product.subtitle,
-      price: product.price,
-      image: product.image,
-      palette: palette,
-      qty,
-    });
+    cart.push(item);
   }
   saveCart();
   updateCartUI();
@@ -879,10 +1039,12 @@ function updateCartUI() {
         <img src="${item.image}" alt="${item.name}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;" />
         <div style="flex:1;min-width:0;">
           <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.15rem;">${item.name} <span style="color:#9b8a82;font-weight:400;">${item.subtitle}</span></div>
-          <div style="display:flex;gap:4px;align-items:center;margin-bottom:0.35rem;">
-            ${item.palette.swatches.length ? item.palette.swatches.map(c=>`<span style="width:12px;height:12px;border-radius:50%;background:${c};border:1px solid rgba(28,20,18,0.15);display:inline-block;"></span>`).join('') : ''}
-            <span style="font-size:0.75rem;color:#9b8a82;margin-left:4px;">${item.palette.name}</span>
+          <div style="display:flex;gap:4px;align-items:center;margin-bottom:0.35rem;flex-wrap:wrap;">
+            ${(item.swatches || []).map(c=>`<span style="width:12px;height:12px;border-radius:50%;background:${c};border:1px solid rgba(28,20,18,0.15);display:inline-block;"></span>`).join('')}
+            <span style="font-size:0.75rem;color:#9b8a82;margin-left:4px;">${item.colourLabel || ''}</span>
           </div>
+          ${item.foilNumberLetter && item.foilNumberLetter.on ? `<div style="font-size:0.75rem;color:#9b8a82;margin-bottom:0.2rem;">Foil ${item.foilNumberLetter.included ? '' : '(+$10) '}— <strong style="color:#3a2e2a;">${item.foilNumberLetter.text || '—'}</strong></div>` : ''}
+          ${item.foilThemed && item.foilThemed.on ? `<div style="font-size:0.75rem;color:#9b8a82;margin-bottom:0.2rem;">Themed foil — <strong style="color:#3a2e2a;">${item.foilThemed.text || 'as discussed'}</strong> <span style="color:#c0b0a8;">(price TBC)</span></div>` : ''}
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:0.5rem;">
               <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
@@ -912,7 +1074,7 @@ function updateCheckoutSummary() {
       <img src="${item.image}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0;" />
       <div style="flex:1;min-width:0;">
         <div style="font-size:0.875rem;font-weight:600;">${item.name} ${item.subtitle} × ${item.qty}</div>
-        <div style="font-size:0.75rem;color:#9b8a82;">${item.palette.name}</div>
+        <div style="font-size:0.75rem;color:#9b8a82;">${item.colourLabel || ''}${item.foilNumberLetter && item.foilNumberLetter.on ? ` · Foil ${item.foilNumberLetter.text || ''}` : ''}${item.foilThemed && item.foilThemed.on ? ` · Themed foil` : ''}</div>
       </div>
       <div style="font-weight:700;font-size:0.875rem;">${formatPrice(item.price * item.qty)}</div>
     </div>
@@ -924,12 +1086,13 @@ function updateCheckoutSummary() {
 
 // ===================== NAVIGATION =====================
 function navigate(view) {
-  const views = ['home','grab-and-go','diy-kits','custom','checkout','confirmation'];
+  const views = ['home','grab-and-go','custom','contact','checkout','confirmation'];
   views.forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) el.style.display = v === view ? (v === 'confirmation' ? 'flex' : 'block') : 'none';
   });
   currentView = view;
+  closeMobileMenu();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   closeCart();
 
@@ -940,6 +1103,29 @@ function navigate(view) {
   if (view === 'custom') {
     setTimeout(initEventDatepicker, 120);
   }
+}
+
+// Jump home then scroll to the gallery section.
+function goGallery() {
+  navigate('home');
+  setTimeout(() => {
+    const el = document.getElementById('gallery-grid');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
+}
+
+// ===================== MOBILE MENU =====================
+function toggleMobileMenu() {
+  const m = document.getElementById('mobile-menu');
+  const open = m.style.display === 'flex';
+  m.style.display = open ? 'none' : 'flex';
+  document.getElementById('hamburger-btn').setAttribute('aria-expanded', String(!open));
+}
+function closeMobileMenu() {
+  const m = document.getElementById('mobile-menu');
+  if (m) m.style.display = 'none';
+  const h = document.getElementById('hamburger-btn');
+  if (h) h.setAttribute('aria-expanded', 'false');
 }
 
 function goToCheckout() {
@@ -963,15 +1149,34 @@ function closeCart() {
 
 // ===================== PRODUCT MODAL =====================
 let activeProduct = null;
-let selectedPalette = null;
+let selectedVariant = null;
 let selectedQty = 1;
+let colourMode = 'preset';            // 'preset' | 'custom'
+let selectedPaletteId = null;         // when colourMode === 'preset'
+let selectedCustomColours = [];       // [{name,hex}] when colourMode === 'custom'
+let foilNL = { on: false, text: '' };     // number/letter foil
+let foilThemed = { on: false, text: '' }; // themed foil (priced later)
+let activeImages = [];
+let activeImageIndex = 0;
+
+const SECTION_LABEL = 'font-size:0.75rem;font-weight:700;color:#6b5a52;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 0.75rem;';
+
+function presetPalettes() { return CATALOGUE.palettes.filter(pl => pl.id !== 'custom'); }
 
 function openProduct(productId, category) {
   const products = category === 'gag' ? CATALOGUE.grabAndGo : CATALOGUE.diyKits;
   activeProduct = products.find(p => p.id === productId);
   if (!activeProduct) return;
-  selectedPalette = CATALOGUE.palettes[0];
+  colourMode = 'preset';
+  selectedPaletteId = presetPalettes()[0].id;
+  selectedCustomColours = [];
+  selectedVariant = (activeProduct.variants && activeProduct.variants.length) ? activeProduct.variants[0] : null;
+  // Foil: number/letter is pre-selected & locked-on when included in the price.
+  foilNL = { on: !!activeProduct.numberLetterFoilIncluded, text: '' };
+  foilThemed = { on: false, text: '' };
   selectedQty = 1;
+  activeImages = (activeProduct.images && activeProduct.images.length) ? activeProduct.images : [activeProduct.image];
+  activeImageIndex = 0;
   renderModal();
   document.getElementById('product-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -986,48 +1191,145 @@ function handleModalBackdropClick(e) {
   if (e.target === document.getElementById('product-modal')) closeModal();
 }
 
-function selectPalette(paletteId) {
-  selectedPalette = CATALOGUE.palettes.find(p => p.id === paletteId);
-  renderModalBody();
+// ---- image carousel ----
+function renderCarousel() {
+  const img = document.getElementById('modal-img');
+  img.src = activeImages[activeImageIndex];
+  img.alt = activeProduct.name;
+  const multi = activeImages.length > 1;
+  document.getElementById('carousel-prev').style.display = multi ? 'flex' : 'none';
+  document.getElementById('carousel-next').style.display = multi ? 'flex' : 'none';
+  document.getElementById('modal-dots').innerHTML = multi
+    ? activeImages.map((_, i) => `<span onclick="carouselGo(${i})" style="width:8px;height:8px;border-radius:50%;cursor:pointer;background:${i === activeImageIndex ? '#fff' : 'rgba(255,255,255,0.55)'};box-shadow:0 1px 3px rgba(0,0,0,0.3);"></span>`).join('')
+    : '';
 }
+function carouselMove(d) { activeImageIndex = (activeImageIndex + d + activeImages.length) % activeImages.length; renderCarousel(); }
+function carouselGo(i) { activeImageIndex = i; renderCarousel(); }
 
-function changeQty(delta) {
-  selectedQty = Math.max(1, selectedQty + delta);
+// ---- selections ----
+function selectVariant(variantId) {
+  selectedVariant = activeProduct.variants.find(v => v.id === variantId) || selectedVariant;
   renderModalBody();
 }
+function setColourMode(mode) { colourMode = mode; renderModalBody(); }
+function selectPreset(paletteId) { colourMode = 'preset'; selectedPaletteId = paletteId; renderModalBody(); }
+function toggleCustomColour(name) {
+  const limit = activeProduct.colourLimit || 3;
+  const idx = selectedCustomColours.findIndex(c => c.name === name);
+  if (idx >= 0) { selectedCustomColours.splice(idx, 1); }
+  else {
+    if (selectedCustomColours.length >= limit) return; // at limit — must deselect first
+    const col = CATALOGUE.tuftexColours.find(c => c.name === name);
+    if (col) selectedCustomColours.push(col);
+  }
+  renderModalBody();
+}
+function toggleFoilNL(on) { if (activeProduct.numberLetterFoilIncluded) return; foilNL.on = on; syncFoilText(); renderModalBody(); }
+function toggleFoilThemed(on) { foilThemed.on = on; syncFoilText(); renderModalBody(); }
+function syncFoilText() {
+  const a = document.getElementById('foil-nl-text'); if (a) foilNL.text = a.value;
+  const b = document.getElementById('foil-themed-text'); if (b) foilThemed.text = b.value;
+}
+function onFoilTextInput() { syncFoilText(); }
+function changeQty(delta) { syncFoilText(); selectedQty = Math.max(1, selectedQty + delta); renderModalBody(); }
 
 function renderModal() {
-  document.getElementById('modal-img').src = activeProduct.image;
-  document.getElementById('modal-img').alt = activeProduct.name;
+  renderCarousel();
   renderModalBody();
 }
 
-function renderModalBody() {
-  document.getElementById('modal-body').innerHTML = `
-    <h2 class="font-display" style="font-size:1.75rem;margin:0 0 0.25rem;">${activeProduct.name}</h2>
-    <p style="color:#9b8a82;margin:0 0 0.75rem;font-size:0.9rem;">${activeProduct.subtitle}</p>
-    <p style="color:#3a2e2a;line-height:1.7;margin:0 0 1.25rem;font-size:0.95rem;">${activeProduct.description}</p>
+// Current colour limit for the active product.
+function colourLimit() { return activeProduct.colourLimit || 3; }
 
-    ${activeProduct.includes ? `
+function renderModalBody() {
+  const p = activeProduct;
+  const limit = colourLimit();
+  const hasVariants = Array.isArray(p.variants) && p.variants.length;
+  const unitPrice = computeUnitPrice(p, selectedVariant, foilNL.on);
+
+  document.getElementById('modal-body').innerHTML = `
+    <h2 class="font-display" style="font-size:1.75rem;margin:0 0 0.25rem;">${p.name}</h2>
+    <p style="color:#9b8a82;margin:0 0 0.75rem;font-size:0.9rem;">${p.subtitle}</p>
+    <p style="color:#3a2e2a;line-height:1.7;margin:0 0 1.25rem;font-size:0.95rem;">${p.description}</p>
+
+    ${p.includes ? `
     <div style="margin-bottom:1.25rem;">
       <p style="font-size:0.75rem;font-weight:700;color:#6b5a52;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 0.5rem;">Includes</p>
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-        ${activeProduct.includes.map(inc => `<span style="background:rgba(28,20,18,0.06);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.78rem;color:#3a2e2a;">${inc}</span>`).join('')}
+        ${p.includes.map(inc => `<span style="background:rgba(28,20,18,0.06);border-radius:6px;padding:0.25rem 0.6rem;font-size:0.78rem;color:#3a2e2a;">${inc}</span>`).join('')}
+      </div>
+    </div>` : ''}
+
+    ${hasVariants ? `
+    <div style="margin-bottom:1.5rem;">
+      <p style="${SECTION_LABEL}">Size</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+        ${p.variants.map(v => `
+          <button type="button" class="size-btn ${v.id === selectedVariant.id ? 'selected' : ''}" onclick="selectVariant('${v.id}')">
+            <span style="font-weight:700;">${v.label}</span>
+            <span style="display:block;font-size:0.72rem;color:#9b8a82;">${formatPrice(v.price)}</span>
+          </button>
+        `).join('')}
       </div>
     </div>` : ''}
 
     <div style="margin-bottom:1.5rem;">
-      <p style="font-size:0.75rem;font-weight:700;color:#6b5a52;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 0.75rem;">Colour palette</p>
+      <p style="${SECTION_LABEL}">Colours <span style="color:#9b8a82;font-weight:600;">· pick up to ${limit}</span></p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.5rem;">
-        ${CATALOGUE.palettes.map(p => `
-          <div class="palette-card ${p.id === selectedPalette.id ? 'selected' : ''}" onclick="selectPalette('${p.id}')">
+        ${presetPalettes().map(pl => `
+          <div class="palette-card ${colourMode === 'preset' && pl.id === selectedPaletteId ? 'selected' : ''}" onclick="selectPreset('${pl.id}')">
             <div style="display:flex;gap:3px;margin-bottom:0.3rem;">
-              ${p.swatches.length ? p.swatches.map(c => `<span style="width:18px;height:18px;border-radius:50%;background:${c};border:1px solid rgba(28,20,18,0.12);display:inline-block;flex-shrink:0;"></span>`).join('') : '<span style="font-size:0.8rem;">✏️</span>'}
+              ${pl.swatches.slice(0, limit).map(c => `<span style="width:18px;height:18px;border-radius:50%;background:${c};border:1px solid rgba(28,20,18,0.12);display:inline-block;flex-shrink:0;"></span>`).join('')}
             </div>
-            <p style="margin:0;font-size:0.72rem;font-weight:600;color:#3a2e2a;">${p.name}</p>
+            <p style="margin:0;font-size:0.72rem;font-weight:600;color:#3a2e2a;">${pl.name}</p>
           </div>
         `).join('')}
+        <div class="palette-card ${colourMode === 'custom' ? 'selected' : ''}" onclick="setColourMode('custom')">
+          <div style="display:flex;gap:3px;margin-bottom:0.3rem;align-items:center;height:18px;">🎨</div>
+          <p style="margin:0;font-size:0.72rem;font-weight:600;color:#3a2e2a;">Choose your own</p>
+        </div>
       </div>
+
+      ${colourMode === 'custom' ? `
+      <div style="margin-top:0.85rem;background:rgba(28,20,18,0.03);border-radius:12px;padding:0.85rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+          <span style="font-size:0.8rem;font-weight:700;color:#3a2e2a;">${selectedCustomColours.length} / ${limit} selected</span>
+          ${selectedCustomColours.length ? `<span style="font-size:0.75rem;color:#6b5a52;">${selectedCustomColours.map(c => c.name).join(', ')}</span>` : `<span style="font-size:0.75rem;color:#9b8a82;">Tap to choose</span>`}
+        </div>
+        <div class="tuftex-grid">
+          ${CATALOGUE.tuftexColours.map(c => {
+            const on = selectedCustomColours.some(s => s.name === c.name);
+            const dim = !on && selectedCustomColours.length >= limit;
+            return `<button type="button" class="tuftex-swatch ${on ? 'selected' : ''}" title="${c.name}" onclick="toggleCustomColour('${c.name.replace(/'/g, "\\'")}')" style="background:${c.hex};${dim ? 'opacity:0.35;' : ''}">${on ? '<span class="tuftex-check">✓</span>' : ''}</button>`;
+          }).join('')}
+        </div>
+        <p style="margin:0.6rem 0 0;font-size:0.72rem;color:#9b8a82;">Colours shown are a guide — we'll match them as closely as we can.</p>
+      </div>` : ''}
+    </div>
+
+    <!-- Foil add-ons (standard on every product) -->
+    <div style="margin-bottom:1.25rem;">
+      <p style="${SECTION_LABEL}">Add a foil</p>
+
+      <label class="addon-row" style="${foilNL.on ? 'border-color:var(--coral);' : ''}">
+        <input type="checkbox" ${foilNL.on ? 'checked' : ''} ${p.numberLetterFoilIncluded ? 'disabled' : ''} onchange="toggleFoilNL(this.checked)" />
+        <span style="flex:1;">
+          <strong style="font-size:0.875rem;">Foil number or letter</strong>
+          <span style="color:var(--coral);font-weight:700;font-size:0.8rem;"> ${p.numberLetterFoilIncluded ? '· included' : '· +$10'}</span>
+          ${p.numberLetterFoilIncluded ? `<span style="display:block;font-size:0.72rem;color:#9b8a82;">Included with this product — just tell us which one.</span>` : ''}
+        </span>
+      </label>
+      ${foilNL.on ? `<input class="field" id="foil-nl-text" type="text" maxlength="40" value="${(foilNL.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="e.g. the number 5, or the letter A" style="margin:0.5rem 0 0.9rem;" />` : '<div style="height:0.6rem;"></div>'}
+
+      <label class="addon-row" style="${foilThemed.on ? 'border-color:var(--coral);' : ''}">
+        <input type="checkbox" ${foilThemed.on ? 'checked' : ''} onchange="toggleFoilThemed(this.checked)" />
+        <span style="flex:1;">
+          <strong style="font-size:0.875rem;">Add themed foil/s</strong>
+          <span style="color:#9b8a82;font-weight:700;font-size:0.8rem;"> · price sent later</span>
+          <span style="display:block;font-size:0.72rem;color:#9b8a82;">e.g. a star, rainbow, dinosaur. We'll do our best to source what you ask for and send you a price.</span>
+        </span>
+      </label>
+      ${foilThemed.on ? `<input class="field" id="foil-themed-text" type="text" maxlength="80" value="${(foilThemed.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="Describe the themed foil/s you'd like" style="margin:0.5rem 0 0;" />` : ''}
     </div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
@@ -1037,14 +1339,59 @@ function renderModalBody() {
         <span style="font-weight:700;font-size:1rem;min-width:24px;text-align:center;">${selectedQty}</span>
         <button class="qty-btn" onclick="changeQty(1)">+</button>
       </div>
-      <span class="font-display" style="font-size:1.5rem;color:var(--coral);">${formatPrice(activeProduct.price * selectedQty)}</span>
+      <span class="font-display" id="modal-price" style="font-size:1.5rem;color:var(--coral);">${formatPrice(unitPrice * selectedQty)}</span>
     </div>
-    <button class="btn-coral" onclick="handleAddToCart()" style="width:100%;padding:0.9rem;font-size:1rem;margin-top:1.25rem;">Add to cart</button>
+    <div id="modal-error" style="display:none;color:var(--coral);font-size:0.8rem;margin-top:0.6rem;"></div>
+    <button class="btn-coral" onclick="handleAddToCart()" style="width:100%;padding:0.9rem;font-size:1rem;margin-top:1rem;">Add to cart</button>
   `;
 }
 
+function modalError(msg) {
+  const el = document.getElementById('modal-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
 function handleAddToCart() {
-  addToCart(activeProduct, selectedPalette, selectedQty);
+  const p = activeProduct;
+  syncFoilText();
+
+  // Validate colours
+  let colourLabel, swatches;
+  if (colourMode === 'custom') {
+    if (!selectedCustomColours.length) return modalError('Please choose at least one colour.');
+    colourLabel = selectedCustomColours.map(c => c.name).join(', ');
+    swatches = selectedCustomColours.map(c => c.hex);
+  } else {
+    const pal = presetPalettes().find(pl => pl.id === selectedPaletteId);
+    colourLabel = pal.name;
+    swatches = pal.swatches.slice(0, colourLimit());
+  }
+
+  // Validate foil text
+  if (foilNL.on && !foilNL.text.trim()) return modalError('Please tell us the foil number or letter.');
+  if (foilThemed.on && !foilThemed.text.trim()) return modalError('Please describe the themed foil you\'d like.');
+
+  const variant = selectedVariant;
+  const fnl = { on: foilNL.on, text: foilNL.text.trim(), included: !!p.numberLetterFoilIncluded };
+  const fth = { on: foilThemed.on, text: foilThemed.text.trim() };
+  const key = [p.id, variant ? variant.id : '', colourMode, colourLabel, fnl.on ? 'nl:' + fnl.text : '', fth.on ? 'th:' + fth.text : ''].join('|');
+
+  addToCart({
+    key,
+    id: p.id,
+    name: p.name,
+    subtitle: variant ? variant.label : p.subtitle,
+    image: activeImages[0],
+    price: computeUnitPrice(p, variant, fnl.on),
+    variantId: variant ? variant.id : '',
+    variantLabel: variant ? variant.label : '',
+    colourMode,
+    colourLabel,
+    swatches,
+    foilNumberLetter: fnl,
+    foilThemed: fth,
+    qty: selectedQty,
+  });
   closeModal();
   openCart();
 }
@@ -1059,7 +1406,7 @@ function renderProductGrid(containerId, products, category) {
         <img src="${p.image}" alt="${p.name}" class="product-img" />
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(28,20,18,0.35) 0%,transparent 50%);pointer-events:none;"></div>
         <div style="position:absolute;bottom:0.75rem;right:0.75rem;background:rgba(250,247,242,0.95);border-radius:8px;padding:0.3rem 0.65rem;">
-          <span class="font-display" style="font-size:1rem;color:var(--coral);">${formatPrice(p.price)}</span>
+          <span class="font-display" style="font-size:1rem;color:var(--coral);">${(p.variants && p.variants.length) ? 'from ' : ''}${formatPrice(p.price)}</span>
         </div>
       </div>
       <div style="padding:1.25rem;">
@@ -1104,12 +1451,18 @@ function setFulfilment(type) {
 }
 
 // ===================== DATE PICKERS =====================
+// Pickup/delivery aren't available Sun (0), Tue (2), Wed (3).
+const UNAVAILABLE_WEEKDAYS = [0, 2, 3];
+function isUnavailablePickupDay(date) {
+  return UNAVAILABLE_WEEKDAYS.includes(date.getDay());
+}
+
 function initCheckoutDatepicker() {
   const el = document.getElementById('checkout-date');
   if (!el || el._flatpickr) return;
   checkoutFlatpickr = flatpickr(el, {
     minDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-    disable: BLOCKED_DATES,
+    disable: [...BLOCKED_DATES, isUnavailablePickupDay],
     dateFormat: 'd M Y',
     disableMobile: false,
   });
@@ -1127,6 +1480,19 @@ function initEventDatepicker() {
 }
 
 // ===================== FORM SUBMISSIONS =====================
+// Posts an enquiry to the Zoho CRM function. `leadSource` distinguishes the
+// custom-enquiry form from the contact form. Returns true on success.
+async function postEnquiry(data, leadSource) {
+  const res = await fetch('/api/custom-enquiry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...data, lead_source: leadSource }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.ok) throw new Error(json.error || 'Request failed');
+  return true;
+}
+
 async function submitCustomForm(e) {
   e.preventDefault();
   const btn = document.getElementById('custom-submit-btn');
@@ -1134,20 +1500,32 @@ async function submitCustomForm(e) {
   btn.textContent = 'Sending…';
   const form = e.target;
   const data = Object.fromEntries(new FormData(form));
-
-  // Submit to Formspree — replace YOUR_FORM_ID with your actual Formspree endpoint
-  // Send to Formspree — replace YOUR_FORM_ID with your actual endpoint ID
   try {
-    await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, _subject: 'Custom Installation Enquiry — Hooray HQ' }),
-    });
-  } catch {
-    // Gracefully continue — show success even without a live endpoint in dev
+    await postEnquiry(data, 'Website — Custom enquiry');
+    document.getElementById('custom-form').style.display = 'none';
+    document.getElementById('custom-form-success').style.display = 'block';
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Send enquiry';
+    alert(`Sorry, we couldn't send your enquiry just now (${err.message}). Please email us at hello@hoorayhq.co.nz and we'll get straight back to you.`);
   }
-  document.getElementById('custom-form').style.display = 'none';
-  document.getElementById('custom-form-success').style.display = 'block';
+}
+
+async function submitContactForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('contact-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  const data = Object.fromEntries(new FormData(e.target));
+  try {
+    await postEnquiry(data, 'Website — Contact form');
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('contact-form-success').style.display = 'block';
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Send message';
+    alert(`Sorry, we couldn't send your message just now (${err.message}). Please email us at hello@hoorayhq.co.nz.`);
+  }
 }
 
 async function submitCheckout(e) {
@@ -1173,7 +1551,14 @@ async function submitCheckout(e) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        items: cart.map(i => ({ id: i.id, qty: i.qty, palette: i.palette.name })),
+        items: cart.map(i => ({
+          id: i.id,
+          qty: i.qty,
+          variantId: i.variantId || '',
+          colours: i.colourLabel || '',
+          foilNumberLetter: i.foilNumberLetter || { on: false, text: '' },
+          foilThemed: i.foilThemed || { on: false, text: '' },
+        })),
         customer: { name: data.name, email: data.email, phone: data.phone },
         fulfilment: currentFulfilment,
         date: data.date,
@@ -1218,7 +1603,7 @@ function renderConfirmation(name, date, items, total, fulfilment) {
     <h4 style="margin:0 0 0.75rem;font-weight:700;">Your order</h4>
     ${items.map(item => `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-        <span style="font-size:0.875rem;">${item.name} ${item.subtitle} × ${item.qty} — <em style="color:#9b8a82;">${item.palette.name}</em></span>
+        <span style="font-size:0.875rem;">${item.name} ${item.subtitle} × ${item.qty} — <em style="color:#9b8a82;">${item.colourLabel || ''}${item.foilNumberLetter && item.foilNumberLetter.on ? `, foil ${item.foilNumberLetter.text}` : ''}${item.foilThemed && item.foilThemed.on ? `, themed foil` : ''}</em></span>
         <span style="font-weight:600;font-size:0.875rem;">${formatPrice(item.price * item.qty)}</span>
       </div>
     `).join('')}
@@ -1233,11 +1618,12 @@ function renderConfirmation(name, date, items, total, fulfilment) {
 
 // ===================== FAQ =====================
 const FAQS = [
-  { q: 'How far in advance do I need to book?', a: 'For grab-and-go and DIY kits, we recommend at least 2–3 days notice. For custom installations, ideally 1–2 weeks — especially for weekends.' },
-  { q: 'Where do you deliver?', a: 'We\'re based in Whangaparaoa and deliver across greater Auckland. Custom installations are available throughout Auckland. DIY kits and grab-and-go can also be picked up from us.' },
-  { q: 'Can I customise the colours?', a: 'Absolutely! We have a range of curated palettes to choose from, or you can select "Custom" and we\'ll do our best to match your colours exactly. Just let us know in the notes.' },
-  { q: 'How long do the garlands last?', a: 'Latex balloons typically last 12–24 hours indoors. For outdoor events, this can be shorter depending on heat and sun. Foil elements (if included) last much longer.' },
-  { q: 'Do you offer a hire agreement for garlands?', a: 'For grab-and-go garlands, you keep them after your event. Custom installations are priced for the event — we\'ll discuss collection or leave arrangements with you.' },
+  { q: 'How far in advance do I need to book?', a: 'For Grab & Go, a few days notice is ideal so we can have your colours ready. For custom & themed installations, we recommend 1–2 weeks — especially for weekends.' },
+  { q: 'Where are you based and do you deliver?', a: 'We\'re based in Whangaparaoa. Grab & Go orders are collected from us (and delivery can be arranged for a small fee). Every custom & themed order is delivered and installed by us across Whangaparaoa and greater Auckland.' },
+  { q: 'Can I customise the colours?', a: 'Absolutely! Choose one of our curated palettes, or select "Choose your own" to pick your colours individually — up to 2–3 depending on the piece, and we\'ll match them as closely as we can.' },
+  { q: 'What\'s the minimum for a custom installation?', a: 'Custom & themed installations start at a minimum spend of $500. A 50% deposit secures your date in the calendar, and every custom order is delivered and installed by us.' },
+  { q: 'Can I add a foil number or letter?', a: 'Yes! Our Mini Garland and Freestanding Mini Column include a foil number or letter. The Freestanding Garland and Arch can have a themed foil added for $10.' },
+  { q: 'How long do the balloons last?', a: 'Latex balloons typically last 12–24 hours indoors. Outdoors this can be shorter depending on heat and sun. Foil elements last much longer.' },
 ];
 
 function renderFAQs() {
@@ -1265,15 +1651,84 @@ function toggleFAQ(i) {
   icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(0deg)';
 }
 
+// ===================== GALLERY =====================
+const GALLERY = [
+  'images/balloon-garlands/IMG_3805.jpeg',
+  'images/balloon-garlands/Peachy_20250801163924258.jpeg',
+  'images/balloon-garlands/IMG_8406.jpeg',
+  'images/balloon-garlands/BrooklynBday-196.JPG',
+  'images/balloon-garlands/IMG_7347.jpeg',
+  'images/balloon-garlands/IMG_3534.jpeg',
+  'images/balloon-garlands/IMG_9029.jpeg',
+  'images/balloon-garlands/IMG_3807.jpeg',
+  'images/balloon-garlands/IMG_6607.jpeg',
+  'images/balloon-garlands/IMG_0287.jpeg',
+  'images/balloon-garlands/IMG_7140.jpeg',
+  'images/balloon-garlands/IMG_9022.jpeg',
+  'images/balloon-garlands/BrooklynBday-170.JPG',
+  'images/balloon-garlands/IMG_6634.jpeg',
+  'images/balloon-garlands/IMG_3765.jpeg',
+  'images/balloon-garlands/IMG_6581.jpeg',
+  'images/balloon-garlands/DSC08129.jpg',
+  'images/balloon-garlands/IMG_3766.jpeg',
+  'images/balloon-garlands/IMG_0473.jpeg',
+  'images/balloon-garlands/IMG_6323.JPG',
+  'images/balloon-garlands/IMG_0505.jpeg',
+];
+
+function renderGallery() {
+  const el = document.getElementById('gallery-grid');
+  if (!el) return;
+  el.innerHTML = GALLERY.map(src => `
+    <img class="gallery-img" src="${src}" alt="Balloon display by Hooray HQ" loading="lazy" onclick="openLightbox('${src}')" />
+  `).join('');
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  // Close on backdrop or button click, but not when clicking the image itself.
+  if (e && e.target && e.target.id === 'lightbox-img') return;
+  document.getElementById('lightbox').style.display = 'none';
+  document.getElementById('lightbox-img').src = '';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('lightbox').style.display === 'flex') closeLightbox();
+    if (document.getElementById('product-modal').style.display === 'flex') closeModal();
+  }
+});
+
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', async () => {
+  let loadFailed = false;
   try {
     await loadCatalogue();
   } catch (e) {
     console.error(e);
+    loadFailed = true;
   }
-  renderProductGrid('gag-product-grid', CATALOGUE.grabAndGo, 'gag');
-  renderProductGrid('diy-product-grid', CATALOGUE.diyKits, 'diy');
+
+  if (loadFailed || !CATALOGUE.grabAndGo.length) {
+    // Most common cause: opening store.html directly via file:// — browsers block
+    // fetch() of local files. The site needs to be served over http(s).
+    const grid = document.getElementById('gag-product-grid');
+    if (grid) grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:2.5rem 1rem;color:#6b5a52;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">🎈</div>
+        <p style="margin:0 0 0.35rem;font-weight:700;color:var(--dark);">Products can't load when opening the file directly.</p>
+        <p style="margin:0;font-size:0.9rem;">Please view the live site, or run a local server (e.g. <code>node serve.mjs</code>) and open <code>http://localhost:3000/store.html</code>.</p>
+      </div>`;
+  } else {
+    renderProductGrid('gag-product-grid', CATALOGUE.grabAndGo, 'gag');
+    renderGallery();
+  }
   renderFAQs();
   updateCartUI();
   handleStripeRedirect();

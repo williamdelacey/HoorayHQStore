@@ -35,14 +35,50 @@ export async function onRequestPost(context) {
       if (!product) {
         throw new Error(`Unknown product: ${item.id}`);
       }
+
+      // Resolve the price server-side from the catalogue — never trust a price
+      // sent by the browser. Start from the base price, then apply the chosen
+      // size variant and any foil add-on.
+      let unitPrice = Number(product.price);
+      const nameParts = [product.name];
+
+      if (Array.isArray(product.variants) && product.variants.length) {
+        const variant = product.variants.find((v) => v.id === item.variantId);
+        if (!variant) {
+          throw new Error(`Invalid size for ${product.name}`);
+        }
+        unitPrice = Number(variant.price);
+        nameParts.push(variant.label);
+      } else if (product.subtitle) {
+        nameParts.push(product.subtitle);
+      }
+
+      const descParts = [];
+      if (item.colours) descParts.push(String(item.colours).slice(0, 120));
+
+      // Number/letter foil: +$10 unless this product includes it (read from the
+      // catalogue server-side, never trusted from the browser).
+      const nl = item.foilNumberLetter || {};
+      if (nl.on) {
+        const text = String(nl.text || '').trim().slice(0, 60);
+        if (!product.numberLetterFoilIncluded) unitPrice += 10;
+        descParts.push(`Foil: ${text || '(number/letter)'}`);
+      }
+      // Themed foil: no charge now — captured as a request to price later.
+      const th = item.foilThemed || {};
+      if (th.on) {
+        const text = String(th.text || '').trim().slice(0, 120);
+        descParts.push(`Themed foil (price TBC): ${text || 'as discussed'}`);
+      }
+
       return {
         price_data: {
           currency: 'nzd',
           product_data: {
-            name: `${product.name} ${product.subtitle || ''}`.trim(),
-            description: item.palette || '',
+            name: nameParts.join(' ').trim(),
+            description: descParts.join(' · ') || undefined,
           },
-          unit_amount: Math.round(Number(product.price) * 100),
+          unit_amount: Math.round(unitPrice * 100),
         },
         quantity: Math.max(1, Math.min(Number(item.qty) || 1, 999)),
       };
