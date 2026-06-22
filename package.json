@@ -1,7 +1,13 @@
 {
   "name": "hooray-hq",
   "private": true,
+  "scripts": {
+    "serve": "node serve.mjs",
+    "screenshot": "node screenshot.mjs",
+    "setup-browser": "puppeteer browsers install chrome"
+  },
   "dependencies": {
+    "puppeteer": "^25.1.0",
     "stripe": "^17.0.0"
   }
 }
