@@ -5,19 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy — Hooray HQ</title>
   <meta name="description" content="How Hooray HQ collects, uses, and protects your personal information under the New Zealand Privacy Act." />
+  <link rel="canonical" href="https://hoorayhq.co.nz/privacy.html" />
   <link rel="icon" type="image/svg+xml" href="brand/Logo/Hooray-Favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="pages.css" />
+  <script src="analytics.js" defer></script>
 </head>
 <body>
   <nav class="site-nav">
     <div class="site-nav-inner">
-      <a class="logo" href="store.html"><img src="brand/Logo/Hooray-Logo-nosquiggles.svg" alt="Hooray HQ" /></a>
+      <a class="logo" href="index.html"><img src="brand/Logo/Hooray-Logo-nosquiggles.svg" alt="Hooray HQ" /></a>
       <div class="links">
-        <a href="store.html">Home</a>
-        <a class="btn-coral" href="store.html">Shop Now</a>
+        <a href="index.html">Home</a>
+        <a class="btn-coral" href="index.html">Shop Now</a>
       </div>
     </div>
   </nav>
@@ -34,6 +36,7 @@
       <li><strong>Order &amp; enquiry details:</strong> your name, email, phone, location/suburb, event date, budget range, and any notes you provide.</li>
       <li><strong>Payment information:</strong> card payments are processed securely by Stripe. We do not store your full card details.</li>
       <li><strong>Basic technical data:</strong> standard website logs (e.g. via our hosting provider, Cloudflare).</li>
+      <li><strong>Cookies &amp; analytics data:</strong> with your consent, we use cookies and similar technologies to understand how our site is used and to measure our advertising (see §4).</li>
     </ul>
 
     <h2>2. How we use it</h2>
@@ -44,15 +47,23 @@
     </ul>
 
     <h2>3. Who we share it with</h2>
-    <p>We use trusted third-party services to run our business, including <strong>Stripe</strong> (payments), <strong>Zoho CRM</strong> (managing enquiries and customer records), and <strong>Cloudflare</strong> (website hosting). We share only what's necessary for these services to function. We do not sell your information, and we won't share it with others except as required by law.</p>
+    <p>We use trusted third-party services to run our business, including <strong>Stripe</strong> (payments), <strong>Zoho CRM</strong> (managing enquiries and customer records), <strong>Cloudflare</strong> (website hosting), <strong>Google</strong> (Google Analytics — website usage measurement), and <strong>Meta</strong> (Facebook/Instagram advertising measurement via the Meta Pixel). We share only what's necessary for these services to function. We do not sell your information, and we won't share it with others except as required by law.</p>
 
-    <h2>4. Photos of our work</h2>
+    <h2>4. Cookies &amp; analytics</h2>
+    <p>When you first visit our site we ask whether you're happy for us to use analytics and advertising cookies. <strong>We don't load Google Analytics or the Meta Pixel unless you accept</strong> — if you decline, no analytics or advertising cookies are set.</p>
+    <ul>
+      <li><strong>Google Analytics 4:</strong> helps us understand how visitors find and use the site (pages viewed, general location, device). IP addresses are anonymised.</li>
+      <li><strong>Meta Pixel:</strong> measures the performance of our Facebook/Instagram ads and helps us reach people who may be interested in our balloons.</li>
+    </ul>
+    <p>You can change your choice anytime via the <strong>"Cookie settings"</strong> link in the footer, or by clearing this site's data in your browser. Essential cookies needed for the site and checkout to work are always on.</p>
+
+    <h2>5. Photos of our work</h2>
     <p>We love sharing photos of our installations on our website and social media. Where a photo identifies you or your child, we'll seek your consent first.</p>
 
-    <h2>5. Your rights</h2>
+    <h2>6. Your rights</h2>
     <p>You can ask to see the personal information we hold about you, request corrections, or ask us to delete it (where we're not required to keep it). Email <a href="mailto:hello@hoorayhq.co.nz">hello@hoorayhq.co.nz</a> and we'll help.</p>
 
-    <h2>6. Contact</h2>
+    <h2>7. Contact</h2>
     <p>Hooray HQ — Whangaparaoa, Auckland, New Zealand<br/>
     Email: <a href="mailto:hello@hoorayhq.co.nz">hello@hoorayhq.co.nz</a> · Instagram: <a href="https://www.instagram.com/hooray.hq/" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px;"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>@hooray.hq</a></p>
   </div>
@@ -61,7 +72,7 @@
     <div class="site-footer-inner">
       <div class="bottom">
         <span>© 2026 Hooray HQ. All rights reserved.</span>
-        <span><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · Made with love in Whangaparaoa 🎈</span>
+        <span><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="#" onclick="hoorayOpenCookieSettings();return false;" style="color:inherit;">Cookie settings</a> · Made with love in Whangaparaoa 🎈</span>
       </div>
     </div>
   </footer>

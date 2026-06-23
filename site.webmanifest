@@ -1,0 +1,23 @@
+{
+  "name": "Hooray HQ",
+  "short_name": "Hooray HQ",
+  "description": "Balloon garland hire in Auckland — Grab & Go garlands, arches and mini stacks, plus custom themed installs delivered and set up.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#fc3a3c",
+  "icons": [
+    {
+      "src": "/brand/Logo/Hooray-Logo-cropped.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/Logo/Hooray-Favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

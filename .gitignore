@@ -13,3 +13,21 @@ __pycache__/
 *.af
 *.af~lock~
 temporary screenshots/
+
+# Internal / working files — kept on disk, never pushed or deployed.
+# (Cloudflare Pages deploys the repo root, so anything tracked is publicly
+#  downloadable. Keep build/dev/internal assets untracked.)
+docs/
+tools/
+brand/Hooray HQ - Brand Guidelines.pdf
+brand/Hooray HQ - Brand Guidelines (SVG)/
+brand/Assets/
+data/products.csv
+server.py
+serve.mjs
+screenshot.mjs
+requirements.txt
+CLAUDE.template.md
+_archive/
+*.zip
+.claude/

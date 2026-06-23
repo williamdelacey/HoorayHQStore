@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /upload
+Disallow: /upload.html
+Disallow: /api/
+
+Sitemap: https://hoorayhq.co.nz/sitemap.xml

@@ -1,10 +1,11 @@
 # CLAUDE.md — Frontend Website Rules
 
-## Always Do First
-- **Invoke the `frontend-design` skill** before writing any frontend code, every session, no exceptions.
+## Skills
+- Pick the skill best suited to the task at hand. For visual/UI work reach for `frontend-design`; for copy/SEO use `content-creator` or `seo-optimizer`; for accessibility/UX audits use `web-design-guidelines`; for speed work use `web-performance-optimization`; for Cloudflare/deploy work use the relevant `cloudflare:*` skill.
+- Don't force a skill that doesn't fit. If none applies, just do the task.
 
 ## Before Pushing to GitHub
-- **Read [DEPLOYMENT.md](DEPLOYMENT.md) before any `git push`.** There are two remotes (`origin` and `cloudflare`) pointing at two different sites (1-page holding site vs. full store site) with diverged history. Pushing to the wrong one can deploy store code onto the holding-site domain.
+- **Read [DEPLOYMENT.md](DEPLOYMENT.md) before any `git push`.** There is a single remote, `origin` (`williamdelacey/HoorayHQStore`), wired to the store's Cloudflare Pages project. `main` tracks `origin/main`, so `git push origin main` deploys the store.
 
 ## Reference Images
 - If a reference image is provided: match layout, spacing, typography, and color exactly. Swap in placeholder content (images via `https://placehold.co/`, generic copy). Do not improve or add to the design.
