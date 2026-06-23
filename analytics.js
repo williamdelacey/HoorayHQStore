@@ -8,7 +8,7 @@
  */
 (function () {
   // ============ FILL THESE IN ============
-  var GA4_ID = 'G-XXXXXXXXXX';          // Google Analytics 4 Measurement ID
+  var GA4_ID = 'G-8JETMPRH4F';          // Google Analytics 4 Measurement ID
   var META_PIXEL_ID = 'XXXXXXXXXXXXXXX'; // Meta (Facebook) Pixel ID (15 digits)
   // =======================================
 
