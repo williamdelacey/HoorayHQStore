@@ -6,6 +6,7 @@ credentials.json
 token.json
 .tmp/
 .venv/
+.wrangler/
 __pycache__/
 *.pyc
 .DS_Store

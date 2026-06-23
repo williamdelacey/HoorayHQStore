@@ -1676,12 +1676,28 @@ const GALLERY = [
   'images/balloon-garlands/IMG_0505.jpeg',
 ];
 
-function renderGallery() {
+function paintGallery(sources) {
   const el = document.getElementById('gallery-grid');
   if (!el) return;
-  el.innerHTML = GALLERY.map(src => `
+  el.innerHTML = sources.map(src => `
     <img class="gallery-img" src="${src}" alt="Balloon display by Hooray HQ" loading="lazy" onclick="openLightbox('${src}')" />
   `).join('');
+}
+
+// Photos are managed by Hannah via the private /upload page and stored in R2.
+// We render those (newest first); the hardcoded GALLERY above is the fallback
+// if the list can't load (e.g. opened via file:// or before R2 is set up).
+async function renderGallery() {
+  paintGallery(GALLERY); // show something immediately
+  try {
+    const res = await fetch('/api/gallery-list', { cache: 'no-store' });
+    const data = await res.json();
+    if (data.ok && data.photos && data.photos.length) {
+      paintGallery(data.photos.map(p => p.url));
+    }
+  } catch (e) {
+    /* keep the fallback list */
+  }
 }
 
 function openLightbox(src) {

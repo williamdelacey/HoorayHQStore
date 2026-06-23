@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects/rewrites.
+# Pretty URL for the private photo manager: /upload serves upload.html (200 = rewrite, URL stays /upload).
+/upload    /upload.html    200
+/upload/   /upload.html    200

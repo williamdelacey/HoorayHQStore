@@ -2,3 +2,9 @@ name = "hooray-hq"
 compatibility_date = "2026-06-19"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "."
+
+# R2 bucket backing the event-photo gallery (uploaded via /upload, served via /img/*).
+# Local `wrangler pages dev` simulates this bucket on disk — no remote R2 needed to test.
+[[r2_buckets]]
+binding = "GALLERY_BUCKET"
+bucket_name = "hooray-gallery"
