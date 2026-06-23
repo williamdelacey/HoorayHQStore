@@ -30,6 +30,16 @@ async function getAccessToken(env) {
   return json.access_token;
 }
 
+const MONTHS = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+// Convert the site's "d M Y" (flatpickr) date, e.g. "23 Jun 2026", to ISO for Zoho Date fields.
+function toIsoDate(s) {
+  const m = String(s || '').trim().match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})$/);
+  if (!m) return '';
+  const mon = MONTHS[m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase()];
+  if (!mon) return '';
+  return `${m[3]}-${mon}-${m[1].padStart(2, '0')}`;
+}
+
 function buildLead(data) {
   const name = (data.name || '').trim();
   // Zoho requires Last_Name; split a full name sensibly.
@@ -37,7 +47,8 @@ function buildLead(data) {
   const lastName = parts.length > 1 ? parts.slice(1).join(' ') : (name || 'Enquiry');
   const firstName = parts.length > 1 ? parts[0] : '';
 
-  // Full payload dumped into Description so nothing is ever lost.
+  // Full payload dumped into Description so nothing is ever lost, even if a
+  // field below isn't mapped or a picklist value doesn't match.
   const dump = Object.entries(data)
     .filter(([k]) => !['_subject'].includes(k))
     .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
@@ -46,15 +57,28 @@ function buildLead(data) {
   const lead = {
     Last_Name: lastName,
     Company: data.company || name || 'Hooray HQ enquiry',
-    Lead_Source: data.lead_source || 'Website — Custom enquiry',
     Description: dump,
   };
   if (firstName) lead.First_Name = firstName;
   if (data.email) lead.Email = data.email;
   if (data.phone) lead.Phone = data.phone;
-  if (data.location) lead.City = data.location;
-  // Budget tier → Zoho's standard Annual_Revenue-style field is unsuitable; keep
-  // it in Description (above). Map only safe standard fields here.
+  if (data.location) lead.City = data.location;            // Address - City
+
+  // Custom Enquiries fields (only set when present, so the Contact form's
+  // shorter payload doesn't push empty values into picklists).
+  const eventIso = toIsoDate(data.event_date);
+  if (eventIso) lead.Event_Date = eventIso;
+  if (data.event_time) lead.Event_Time = data.event_time;
+  if (data.budget) lead.Budget_Range = data.budget;        // picklist — must match Zoho options
+  if (data.referral) lead.How_Did_You_Hear = data.referral; // picklist — must match Zoho options
+  const message = data.message || data.notes;
+  if (message) lead.Message_Details = message;
+
+  // NOTE: Lead_Source ("Enquiries Source") is intentionally not set — it's a
+  // restricted picklist and the form-type values ("Website — Custom enquiry")
+  // aren't default options, so writing them would reject the record. The form
+  // type is preserved in Description. Add those picklist options in Zoho and we
+  // can map data.lead_source → Lead_Source.
   return lead;
 }
 
