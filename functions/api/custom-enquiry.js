@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: receives the Custom & Themed enquiry (and the
+// Cloudflare Pages Function: receives the Custom enquiry (and the
 // Contact form) and creates a Lead in Zoho CRM via the direct REST API.
 //
 // Robustness by design: known fields are mapped to proper Lead fields, AND the

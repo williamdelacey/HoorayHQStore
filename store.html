@@ -367,9 +367,8 @@
     <div style="display:flex;gap:0.25rem;align-items:center;" class="desktop-nav">
       <span class="nav-link" onclick="navigate('home')">Home</span>
       <span class="nav-link" onclick="navigate('grab-and-go')">Grab & Go</span>
-      <span class="nav-link" onclick="navigate('custom')">Custom & Themed</span>
+      <span class="nav-link" onclick="navigate('custom')">Custom</span>
       <span class="nav-link" onclick="goGallery()">Gallery</span>
-      <a class="nav-link" href="blog/index.html">Blog</a>
       <span class="nav-link" onclick="navigate('contact')">Contact</span>
     </div>
     <!-- Cart + mobile menu -->
@@ -390,9 +389,8 @@
   <div id="mobile-menu" style="display:none;">
     <span class="mobile-link" onclick="navigate('home')">Home</span>
     <span class="mobile-link" onclick="navigate('grab-and-go')">Grab & Go</span>
-    <span class="mobile-link" onclick="navigate('custom')">Custom & Themed</span>
+    <span class="mobile-link" onclick="navigate('custom')">Custom</span>
     <span class="mobile-link" onclick="goGallery()">Gallery</span>
-    <a class="mobile-link" href="blog/index.html">Blog</a>
     <span class="mobile-link" onclick="navigate('contact')">Contact</span>
     <button class="btn-coral" onclick="navigate('grab-and-go')" style="margin-top:0.5rem;padding:0.7rem;font-size:0.95rem;">Shop Now</button>
   </div>
@@ -411,15 +409,15 @@
           <span style="width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s ease-in-out infinite;display:inline-block;"></span>
           Whangaparaoa &amp; Auckland wide delivery
         </span>
-        <h1 class="font-display" style="font-size:clamp(3rem,10vw,6.5rem);line-height:1;color:#fff;margin:0 0 1rem;text-shadow:0 2px 20px rgba(28,20,18,0.3);">
-          Your moment.<br><span style="color:var(--coral);">Made magic.</span>
+        <h1 class="font-display" style="font-size:clamp(2.5rem,7.5vw,5rem);line-height:1.05;color:#fff;margin:0 0 1rem;text-shadow:0 2px 20px rgba(28,20,18,0.3);">
+          Cause every celebration<br>deserves a <span style="color:var(--coral);">Hooray!</span>
         </h1>
         <p style="font-size:clamp(1rem,2.5vw,1.25rem);color:rgba(255,255,255,0.88);margin:0 auto 2.5rem;max-width:520px;line-height:1.65;">
-          Stunning balloon garlands and custom themed installations — ready when you are.
+          Balloon garlands and custom themed installations.
         </p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-          <button class="btn-coral" onclick="navigate('grab-and-go')" style="padding:1rem 2rem;font-size:1rem;">Shop Now</button>
-          <button onclick="navigate('custom')" style="padding:1rem 2rem;font-size:1rem;font-weight:600;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,0.4);color:#fff;border-radius:12px;cursor:pointer;transition:background 0.2s;">Get a Quote</button>
+          <button class="btn-coral" onclick="navigate('grab-and-go')" style="padding:1rem 2rem;font-size:1rem;">Grab &amp; Go</button>
+          <button onclick="navigate('custom')" style="padding:1rem 2rem;font-size:1rem;font-weight:600;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,0.4);color:#fff;border-radius:12px;cursor:pointer;transition:background 0.2s;">Custom</button>
         </div>
       </div>
       <!-- Scroll cue -->
@@ -433,8 +431,7 @@
     <section style="padding:5rem 1.5rem;max-width:1200px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:3rem;">
         <div class="coral-divider" style="margin:0 auto 1rem;"></div>
-        <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0 0 0.75rem;">What we offer</h2>
-        <p style="color:#6b5a52;max-width:460px;margin:0 auto;line-height:1.7;">Two easy ways to make your space shine — all made with care in Whangaparaoa.</p>
+        <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0;">What we offer</h2>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:840px;margin:0 auto;">
 
@@ -444,7 +441,6 @@
             <img src="images/products/Balloon Garland/Balloon Garland1.png" alt="Grab and Go balloon garland" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           </div>
           <div style="padding:1.5rem;">
-            <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Ready to go</span>
             <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Grab & Go</h3>
             <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Click & collect, but balloons! Pick your colours and size, order online, and collect ready to celebrate.</p>
             <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -454,14 +450,13 @@
           </div>
         </div>
 
-        <!-- Custom & Themed -->
+        <!-- Custom -->
         <div class="card" style="padding:0;overflow:hidden;cursor:pointer;" onclick="navigate('custom')">
           <div style="aspect-ratio:4/3;overflow:hidden;">
             <img src="images/balloon-garlands/BrooklynBday-196.JPG" alt="Custom themed installation" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           </div>
           <div style="padding:1.5rem;">
-            <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom</span>
-            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Custom & Themed</h3>
+            <h3 class="font-display" style="font-size:1.5rem;margin:0 0 0.5rem;">Custom</h3>
             <p style="color:#6b5a52;margin:0 0 1.25rem;line-height:1.65;font-size:0.9rem;">Have it how you like it. We design, deliver, and install a statement display tailored to your celebration.</p>
             <div style="display:flex;align-items:center;justify-content:space-between;">
               <span style="font-size:0.85rem;color:#9b8a82;">From <strong style="color:var(--dark);">$500</strong></span>
@@ -502,8 +497,7 @@
     <section style="padding:5rem 1.5rem;max-width:1200px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:3rem;">
         <div class="coral-divider" style="margin:0 auto 1rem;"></div>
-        <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0 0 0.75rem;">Our work</h2>
-        <p style="color:#6b5a52;max-width:420px;margin:0 auto;line-height:1.7;">Real displays, real parties. Every one made with love in Whangaparaoa. Tap any photo to take a closer look.</p>
+        <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0;">Our work</h2>
       </div>
       <div class="gallery-grid" id="gallery-grid"></div>
     </section>
@@ -513,7 +507,7 @@
       <div style="max-width:1000px;margin:0 auto;">
         <div style="text-align:center;margin-bottom:3rem;">
           <div class="coral-divider" style="margin:0 auto 1rem;"></div>
-          <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0;">Happy customers</h2>
+          <h2 class="font-display" style="font-size:clamp(2rem,5vw,3rem);margin:0;">See what people are saying about us</h2>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;">
           <div class="card" style="padding:1.5rem;">
@@ -548,16 +542,15 @@
     <section style="padding:5rem 1.5rem;max-width:1100px;margin:0 auto;">
       <div style="display:grid;grid-template-columns:0.85fr 1fr;gap:3rem;align-items:center;" class="about-grid">
         <div style="position:relative;max-width:380px;margin:0 auto;">
-          <img src="images/hannah-portrait.jpg" alt="Hannah, the face behind Hooray HQ" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 45px rgba(252,58,60,0.15);" />
+          <img src="images/Hannah/Hannah-Bio.png" alt="Hannah, the face behind Hooray HQ" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 45px rgba(252,58,60,0.15);" />
           <div style="position:absolute;bottom:-14px;right:-14px;background:var(--coral);color:#fff;font-family:'Luckiest Guy',cursive;font-size:0.9rem;letter-spacing:0.03em;padding:0.55rem 1rem;border-radius:12px;box-shadow:0 8px 20px rgba(252,58,60,0.35);transform:rotate(-3deg);">Hooray!</div>
         </div>
         <div>
           <div class="coral-divider" style="margin:0 0 1rem;"></div>
-          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Our story</span>
           <h2 class="font-display" style="font-size:clamp(2rem,5vw,2.75rem);margin:0 0 1rem;">Hi, I'm Hannah!</h2>
-          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">The face behind Hooray HQ. For years I've had the privilege of working with youth centres and churches, creating fun, inviting spaces for kids and young people — I've always loved finding ways to bring excitement and energy to a room.</p>
-          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">Since having my own kids, I've loved creating special celebrations for them and their friends — dreaming up backdrops and oversized garlands that make them walk in and think, <em>"Wow, this is the best day ever!"</em></p>
-          <p style="color:#6b5a52;line-height:1.8;margin:0;">That love for celebrating life's special moments inspired me to start Hooray HQ. My hope is to help make your celebration feel that little bit more elevated — because the moments that matter most are worth <strong style="color:var(--coral);">HOORAY</strong>-ing about.</p>
+          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">For years, I've had the privilege of working with youth centres and churches, creating fun and inviting environments for kids and young people. Whether it's through a themed event or a decorated space I've always loved finding ways to bring excitement and energy to a room.</p>
+          <p style="color:#6b5a52;line-height:1.8;margin:0 0 1rem;">Since having my own kids, I've loved creating special celebrations for them and their friends. From themed backdrops to oversized balloon garlands, I'm constantly dreaming up ways to bring their ideas to life, creating party spaces that make them walk in and think, <em>"Wow, this is the best day ever!"</em></p>
+          <p style="color:#6b5a52;line-height:1.8;margin:0;">That love for celebrating life's special moments inspired me to start Hooray HQ. My hope is that through this business, I can help make your birthday, anniversary, graduation, baby shower, or special event feel just that little bit more elevated. Because I know the moments that matter most deserve a <strong style="color:var(--coral);">HOORAY</strong>!</p>
         </div>
       </div>
     </section>
@@ -583,8 +576,7 @@
             <h4 style="font-family:'Luckiest Guy',cursive;font-size:1rem;margin:0 0 1rem;letter-spacing:0.05em;color:rgba(255,255,255,0.5);text-transform:uppercase;">Explore</h4>
             <div style="display:flex;flex-direction:column;gap:0.5rem;">
               <span onclick="navigate('grab-and-go')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Grab & Go</span>
-              <span onclick="navigate('custom')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Custom & Themed</span>
-              <a href="blog/index.html" style="color:rgba(255,255,255,0.75);font-size:0.9rem;text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Blog</a>
+              <span onclick="navigate('custom')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Custom</span>
               <span onclick="navigate('contact')" style="color:rgba(255,255,255,0.75);cursor:pointer;font-size:0.9rem;transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.75)'">Contact</span>
             </div>
           </div>
@@ -632,7 +624,7 @@
           </div>
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <span style="font-size:1.25rem;line-height:1;">📋</span>
-            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Comes with command strips and simple instructions so you can pop it up wherever you like.</p>
+            <p style="margin:0;font-size:0.875rem;color:#6b5a52;line-height:1.6;">Garlands come with hooks and simple instructions so you can pop it up wherever you like.</p>
           </div>
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <span style="font-size:1.25rem;line-height:1;">🚚</span>
@@ -655,7 +647,7 @@
       </button>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="custom-grid">
         <div>
-          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom &amp; Themed</span>
+          <span class="pill" style="margin-bottom:0.75rem;display:inline-flex;">Custom</span>
           <h1 class="font-display" style="font-size:clamp(2rem,5vw,3.5rem);margin:0 0 1rem;">Have it how you like it</h1>
           <p style="color:#6b5a52;line-height:1.75;margin:0 0 1.5rem;">Custom garlands, themed event styling, and oversized statement installations designed to make your celebration unforgettable — from birthdays and baby showers to grand openings and anniversaries. Tell us your vision and we'll bring it to life.</p>
           <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;">
@@ -971,13 +963,15 @@ function formatPrice(n) {
 }
 
 // Foil add-on pricing (mirrors the server in create-checkout-session.js):
-// number/letter foil = +$10 unless the product includes it; themed foil = $0 (priced later).
+// number/letter foil = +$10 unless the product includes it; themed foil = +$10.
 const NUMBER_LETTER_FOIL_PRICE = 10;
+const THEMED_FOIL_PRICE = 10;
 
 // Server-authoritative price is recomputed at checkout; this mirrors it for display.
-function computeUnitPrice(product, variant, foilNLOn) {
+function computeUnitPrice(product, variant, foilNLOn, foilThemedOn) {
   let price = variant ? Number(variant.price) : Number(product.price);
   if (foilNLOn && !product.numberLetterFoilIncluded) price += NUMBER_LETTER_FOIL_PRICE;
+  if (foilThemedOn) price += THEMED_FOIL_PRICE;
   return price;
 }
 
@@ -1044,7 +1038,7 @@ function updateCartUI() {
             <span style="font-size:0.75rem;color:#9b8a82;margin-left:4px;">${item.colourLabel || ''}</span>
           </div>
           ${item.foilNumberLetter && item.foilNumberLetter.on ? `<div style="font-size:0.75rem;color:#9b8a82;margin-bottom:0.2rem;">Foil ${item.foilNumberLetter.included ? '' : '(+$10) '}— <strong style="color:#3a2e2a;">${item.foilNumberLetter.text || '—'}</strong></div>` : ''}
-          ${item.foilThemed && item.foilThemed.on ? `<div style="font-size:0.75rem;color:#9b8a82;margin-bottom:0.2rem;">Themed foil — <strong style="color:#3a2e2a;">${item.foilThemed.text || 'as discussed'}</strong> <span style="color:#c0b0a8;">(price TBC)</span></div>` : ''}
+          ${item.foilThemed && item.foilThemed.on ? `<div style="font-size:0.75rem;color:#9b8a82;margin-bottom:0.2rem;">Themed foil — <strong style="color:#3a2e2a;">${item.foilThemed.text || 'as discussed'}</strong> <span style="color:#c0b0a8;">(+$10)</span></div>` : ''}
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:0.5rem;">
               <button class="qty-btn" onclick="updateQty('${item.key}', -1)">−</button>
@@ -1155,7 +1149,7 @@ let colourMode = 'preset';            // 'preset' | 'custom'
 let selectedPaletteId = null;         // when colourMode === 'preset'
 let selectedCustomColours = [];       // [{name,hex}] when colourMode === 'custom'
 let foilNL = { on: false, text: '' };     // number/letter foil
-let foilThemed = { on: false, text: '' }; // themed foil (priced later)
+let foilThemed = { on: false, text: '' }; // themed foil (+$10)
 let activeImages = [];
 let activeImageIndex = 0;
 
@@ -1245,7 +1239,7 @@ function renderModalBody() {
   const p = activeProduct;
   const limit = colourLimit();
   const hasVariants = Array.isArray(p.variants) && p.variants.length;
-  const unitPrice = computeUnitPrice(p, selectedVariant, foilNL.on);
+  const unitPrice = computeUnitPrice(p, selectedVariant, foilNL.on, foilThemed.on);
 
   document.getElementById('modal-body').innerHTML = `
     <h2 class="font-display" style="font-size:1.75rem;margin:0 0 0.25rem;">${p.name}</h2>
@@ -1314,22 +1308,23 @@ function renderModalBody() {
       <label class="addon-row" style="${foilNL.on ? 'border-color:var(--coral);' : ''}">
         <input type="checkbox" ${foilNL.on ? 'checked' : ''} ${p.numberLetterFoilIncluded ? 'disabled' : ''} onchange="toggleFoilNL(this.checked)" />
         <span style="flex:1;">
-          <strong style="font-size:0.875rem;">Foil number or letter</strong>
+          <strong style="font-size:0.875rem;">${p.foilLabel || 'Foil number or letter'}</strong>
           <span style="color:var(--coral);font-weight:700;font-size:0.8rem;"> ${p.numberLetterFoilIncluded ? '· included' : '· +$10'}</span>
           ${p.numberLetterFoilIncluded ? `<span style="display:block;font-size:0.72rem;color:#9b8a82;">Included with this product — just tell us which one.</span>` : ''}
         </span>
       </label>
-      ${foilNL.on ? `<input class="field" id="foil-nl-text" type="text" maxlength="40" value="${(foilNL.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="e.g. the number 5, or the letter A" style="margin:0.5rem 0 0.9rem;" />` : '<div style="height:0.6rem;"></div>'}
+      ${foilNL.on ? `<input class="field" id="foil-nl-text" type="text" maxlength="40" value="${(foilNL.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="${p.foilPlaceholder || 'e.g. the number 5, or the letter A'}" style="margin:0.5rem 0 0.9rem;" />` : '<div style="height:0.6rem;"></div>'}
 
+      ${!p.hideThemedFoil ? `
       <label class="addon-row" style="${foilThemed.on ? 'border-color:var(--coral);' : ''}">
         <input type="checkbox" ${foilThemed.on ? 'checked' : ''} onchange="toggleFoilThemed(this.checked)" />
         <span style="flex:1;">
           <strong style="font-size:0.875rem;">Add themed foil/s</strong>
-          <span style="color:#9b8a82;font-weight:700;font-size:0.8rem;"> · price sent later</span>
-          <span style="display:block;font-size:0.72rem;color:#9b8a82;">e.g. a star, rainbow, dinosaur. We'll do our best to source what you ask for and send you a price.</span>
+          <span style="color:var(--coral);font-weight:700;font-size:0.8rem;"> · +$10</span>
+          <span style="display:block;font-size:0.72rem;color:#9b8a82;">e.g. a star, rainbow, dinosaur. We'll find what you're after and check in with you to confirm before we order anything.</span>
         </span>
       </label>
-      ${foilThemed.on ? `<input class="field" id="foil-themed-text" type="text" maxlength="80" value="${(foilThemed.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="Describe the themed foil/s you'd like" style="margin:0.5rem 0 0;" />` : ''}
+      ${foilThemed.on ? `<input class="field" id="foil-themed-text" type="text" maxlength="80" value="${(foilThemed.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="Describe the themed foil/s you'd like" style="margin:0.5rem 0 0;" />` : ''}` : ''}
     </div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
@@ -1382,7 +1377,7 @@ function handleAddToCart() {
     name: p.name,
     subtitle: variant ? variant.label : p.subtitle,
     image: activeImages[0],
-    price: computeUnitPrice(p, variant, fnl.on),
+    price: computeUnitPrice(p, variant, fnl.on, fth.on),
     variantId: variant ? variant.id : '',
     variantLabel: variant ? variant.label : '',
     colourMode,
@@ -1618,12 +1613,16 @@ function renderConfirmation(name, date, items, total, fulfilment) {
 
 // ===================== FAQ =====================
 const FAQS = [
-  { q: 'How far in advance do I need to book?', a: 'For Grab & Go, a few days notice is ideal so we can have your colours ready. For custom & themed installations, we recommend 1–2 weeks — especially for weekends.' },
-  { q: 'Where are you based and do you deliver?', a: 'We\'re based in Whangaparaoa. Grab & Go orders are collected from us (and delivery can be arranged for a small fee). Every custom & themed order is delivered and installed by us across Whangaparaoa and greater Auckland.' },
-  { q: 'Can I customise the colours?', a: 'Absolutely! Choose one of our curated palettes, or select "Choose your own" to pick your colours individually — up to 2–3 depending on the piece, and we\'ll match them as closely as we can.' },
-  { q: 'What\'s the minimum for a custom installation?', a: 'Custom & themed installations start at a minimum spend of $500. A 50% deposit secures your date in the calendar, and every custom order is delivered and installed by us.' },
-  { q: 'Can I add a foil number or letter?', a: 'Yes! Our Mini Garland and Freestanding Mini Column include a foil number or letter. The Freestanding Garland and Arch can have a themed foil added for $10.' },
-  { q: 'How long do the balloons last?', a: 'Latex balloons typically last 12–24 hours indoors. Outdoors this can be shorter depending on heat and sun. Foil elements last much longer.' },
+  { q: 'What comes with my Grab & Go garland?', a: 'A fully assembled, pre-inflated balloon garland, mounting hooks and elastics, and step-by-step instructions to help you hang your garland.' },
+  { q: 'How do I install my Grab & Go?', a: 'Grab & Go balloon garlands come with a small installation pack and instructions. All other Grab & Go products are freestanding, so they don\'t require any setup.' },
+  { q: 'What type of vehicle do I need to transport my balloons?', a: 'We recommend using a full-size SUV with no carseats or other items and the seats folded down to transport your balloons. We can\'t guarantee that your garland will fit in smaller vehicles. If you do come with a smaller vehicle, we can separate your garland into smaller pieces to help with transport — you\'ll just need to put the garland back together when you arrive at your event.' },
+  { q: 'How far in advance do I need to book?', a: 'For Grab & Go, a few days notice is ideal so we can have your colours ready. For custom installations, we recommend 3–4 weeks. Weekends can fill up fast, so to book in for the date you\'d like, the sooner the better!' },
+  { q: 'Where are you based and do you deliver?', a: 'We\'re based in Whangaparaoa. Grab & Go orders are collected from us. Every custom order is delivered and installed by us across Auckland. All products that are to be delivered require a fee.' },
+  { q: 'Can I customise the colours?', a: 'Absolutely! Choose one of our curated palettes, or select "Choose your own" to pick your colours individually — up to 2–3 depending on the piece, and we\'ll match them as closely as we can. If you can\'t find what you\'re looking for, send us a message and we\'ll see what we can do.' },
+  { q: 'How long do the balloons last?', a: 'Our balloon garlands can easily last 7 days and, when kept in the right conditions, can last up to 3 weeks. We use high-quality professional balloons to ensure your garland looks great for as long as possible. For the best longevity, we recommend keeping balloons indoors, away from direct sunlight, heat, and sharp objects.' },
+  { q: 'My balloons look dirty. What can I do?', a: 'Latex balloons naturally attract dust and dirt, especially after being stored. If your balloons are looking a little dusty, simply wipe them down with a damp paper towel or microfibre cloth to restore their original appearance. For harder-to-reach areas, you can also use a hair dryer on a cool setting to gently blow away dust and debris.' },
+  { q: 'What if I need to cancel or reschedule my install?', a: 'Our Grab & Go balloon services are non-refundable. Custom balloon installations require 2 weeks\' notice to cancel and the deposit is non-refundable. Depending on the situation, we may be able to offer a partial credit.' },
+  { q: 'Do you pick up my balloons after?', a: 'The balloons are yours to keep and eventually dispose of. For custom installations, we\'ll pick up any backdrops and equipment after your event.' },
 ];
 
 function renderFAQs() {

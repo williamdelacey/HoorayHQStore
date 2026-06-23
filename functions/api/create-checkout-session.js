@@ -64,11 +64,12 @@ export async function onRequestPost(context) {
         if (!product.numberLetterFoilIncluded) unitPrice += 10;
         descParts.push(`Foil: ${text || '(number/letter)'}`);
       }
-      // Themed foil: no charge now — captured as a request to price later.
+      // Themed foil: +$10, sourced to the customer's request.
       const th = item.foilThemed || {};
       if (th.on) {
         const text = String(th.text || '').trim().slice(0, 120);
-        descParts.push(`Themed foil (price TBC): ${text || 'as discussed'}`);
+        unitPrice += 10;
+        descParts.push(`Themed foil: ${text || 'as discussed'}`);
       }
 
       return {

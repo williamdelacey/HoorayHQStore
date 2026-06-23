@@ -1,5 +1,5 @@
 {
-  "_comment": "SOURCE OF TRUTH for the store catalogue. Edited by hand here; data/products.csv is a generated reference only (run: python3 tools/export_products_csv.py after editing). Prices here are what Stripe charges. Schema: 'price' is the base/from price. 'variants' (optional) [{id,label,price}] size options — when present the chosen variant price overrides the base. 'images' [..] is the carousel (first = primary; 'image' mirrors images[0] for cards). 'colourLimit' = how many palette/Tuftex colours the customer may pick. Foil add-ons are universal in the UI (number/letter foil = +$10 unless 'numberLetterFoilIncluded':true where it's included & pre-selected; themed foil = $0, priced later). 'palettes' are preset combos (the 'custom' entry opens the Tuftex picker). 'tuftexColours' [{name,hex}] powers the custom colour picker (sampled from the Tuftex chart).",
+  "_comment": "SOURCE OF TRUTH for the store catalogue. Edited by hand here; data/products.csv is a generated reference only (run: python3 tools/export_products_csv.py after editing). Prices here are what Stripe charges. Schema: 'price' is the base/from price. 'variants' (optional) [{id,label,price}] size options — when present the chosen variant price overrides the base. 'images' [..] is the carousel (first = primary; 'image' mirrors images[0] for cards). 'colourLimit' = how many palette/Tuftex colours the customer may pick. Foil add-ons are universal in the UI (number/letter foil = +$10 unless 'numberLetterFoilIncluded':true where it's included & pre-selected; themed foil = +$10). Per-product foil flags: 'hideThemedFoil':true hides the themed-foil option; 'foilLabel' overrides the number/letter foil label; 'foilPlaceholder' overrides its text-input placeholder. 'palettes' are preset combos (the 'custom' entry opens the Tuftex picker). 'tuftexColours' [{name,hex}] powers the custom colour picker (sampled from the Tuftex chart).",
   "grabAndGo": [
     {
       "id": "gag-001",
@@ -29,7 +29,7 @@
           "price": 250
         }
       ],
-      "description": "Our classic colour-customisable garland, priced per cluster. Pick up to three colours and the length to suit your space — the perfect finishing touch behind a party table or backdrop.",
+      "description": "Our classic colour-customisable garland, priced per size. Pick up to three colours and the length to suit your space — the perfect finishing touch behind a party table or backdrop.",
       "image": "images/products/Balloon Garland/Balloon Garland1.png",
       "includes": [
         "Up to 3 colours",
@@ -47,7 +47,7 @@
       "subtitle": "1m wide",
       "price": 80,
       "colourLimit": 2,
-      "description": "A petite garland finished with a foil number or letter — mix and match the birthday star's age or initial. Pick up to two colours.",
+      "description": "A petite garland finished with a foil number or letter. Pick up to two colours.",
       "image": "images/products/Mini Garland/Mini Garland.jpg",
       "includes": [
         "Up to 2 colours",
@@ -57,7 +57,8 @@
       "images": [
         "images/products/Mini Garland/Mini Garland.jpg"
       ],
-      "numberLetterFoilIncluded": true
+      "numberLetterFoilIncluded": true,
+      "hideThemedFoil": true
     },
     {
       "id": "gag-003",
@@ -65,7 +66,7 @@
       "subtitle": "1.8m high",
       "price": 250,
       "colourLimit": 3,
-      "description": "A freestanding garland you can place anywhere — behind the party table, beside the entrance, wherever you need a lift. Pick up to three colours and move it wherever you like.",
+      "description": "A freestanding garland you can place anywhere — perfect for the present table or to elevate a backdrop or entrance area. Pick up to three colours and move it wherever you like.",
       "image": "images/products/Freestanding Balloon Garland/freestandinggarland.jpg",
       "includes": [
         "Up to 3 colours",
@@ -79,22 +80,25 @@
     },
     {
       "id": "gag-004",
-      "name": "Freestanding Mini Column",
+      "name": "Freestanding Mini Stack",
       "subtitle": "1.5m high",
       "price": 80,
       "colourLimit": 3,
-      "description": "A freestanding column topped with your choice of number or letter foil. Perfect for the present table or to frame an entrance. Pick up to three colours.",
+      "description": "A freestanding column topped with your choice of foil balloon. Perfect for the present table or to frame an entrance. Pick up to three colours.",
       "image": "images/products/Freestanding Mini Column/Mini Column1.jpg",
       "includes": [
         "Up to 3 colours",
-        "Foil number or letter included",
+        "Foil balloon included",
         "Freestanding base"
       ],
       "images": [
         "images/products/Freestanding Mini Column/Mini Column1.jpg",
         "images/products/Freestanding Mini Column/Mini Column2.jpg"
       ],
-      "numberLetterFoilIncluded": true
+      "numberLetterFoilIncluded": true,
+      "hideThemedFoil": true,
+      "foilLabel": "Foil balloon",
+      "foilPlaceholder": "Eg. The number 5, the letter A, a star"
     },
     {
       "id": "gag-005",
