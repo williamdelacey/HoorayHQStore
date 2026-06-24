@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Text editor — Hooray HQ</title>
+  <link rel="icon" type="image/svg+xml" href="brand/Logo/Hooray-Favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --coral:  #fc3a3c;
+      --gold:   #d4a843;
+      --cream:  #faf7f2;
+      --teal:   #21a8a1;
+      --dark:   #1c1412;
+      --pink:   #FEDADB;
+      --lpink:  #FFEEEF;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Grain — same treatment as the store */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.55;
+    }
+    .blob { position: fixed; pointer-events: none; z-index: 0; border-radius: 50%; }
+    .blob.coral { top: -18%; right: -12%; width: 55vw; height: 55vw;
+      background: radial-gradient(circle, rgba(252,58,60,0.08) 0%, transparent 70%); }
+    .blob.teal { bottom: -12%; left: -16%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(33,168,161,0.07) 0%, transparent 70%); }
+
+    .wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 28px 20px 100px; }
+    .font-display { font-family: 'Luckiest Guy', cursive; letter-spacing: 0.02em; }
+
+    header.page { text-align: center; margin-bottom: 8px; }
+    .eyebrow {
+      display: inline-block; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--coral); margin-bottom: 10px;
+    }
+    h1.title { font-size: clamp(2rem, 7vw, 3rem); line-height: 1; margin: 0; color: var(--dark); }
+    .subtitle { color: rgba(28,20,18,0.6); margin: 12px auto 0; max-width: 36ch; line-height: 1.6; }
+
+    .card {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(28,20,18,0.07);
+      border-radius: 20px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 12px rgba(28,20,18,0.06), 0 1px 3px rgba(28,20,18,0.04);
+    }
+
+    /* Buttons */
+    .btn-coral {
+      background: var(--coral); color: #fff; border: none; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem;
+      padding: 14px 22px; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(252,58,60,0.28), 0 1px 2px rgba(252,58,60,0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn-coral:hover { background: #e83032; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(252,58,60,0.35); }
+    .btn-coral:active { transform: translateY(0); }
+    .btn-coral:focus-visible { outline: 3px solid rgba(252,58,60,0.4); outline-offset: 2px; }
+    .btn-coral:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-ghost {
+      background: transparent; color: rgba(28,20,18,0.6); border: 1.5px solid rgba(28,20,18,0.18);
+      border-radius: 12px; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.9rem;
+      padding: 9px 16px; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .btn-ghost:hover { border-color: var(--coral); color: var(--coral); }
+    .btn-ghost:focus-visible { outline: 3px solid rgba(252,58,60,0.3); outline-offset: 2px; }
+
+    /* Lock screen */
+    #gate { display: flex; flex-direction: column; gap: 16px; padding: 32px 24px; margin-top: 28px; }
+    #gate label { font-weight: 700; font-size: 0.95rem; }
+    .pw-row { display: flex; gap: 10px; }
+    input[type=password], input[type=text].pw {
+      flex: 1; padding: 13px 14px; border-radius: 12px; border: 1.5px solid rgba(28,20,18,0.18);
+      font-family: 'Nunito', sans-serif; font-size: 1rem; background: #fff; color: var(--dark);
+    }
+    input[type=password]:focus, input[type=text].pw:focus { outline: none; border-color: var(--coral); }
+
+    /* App */
+    #app { display: none; margin-top: 24px; }
+
+    .section { margin: 28px 0 0; }
+    .section + .section { margin-top: 34px; }
+    .section-title {
+      font-weight: 700; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--coral); margin: 0 0 12px; padding-bottom: 8px;
+      border-bottom: 1px solid rgba(252,58,60,0.15);
+    }
+    .field { margin: 0 0 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field > label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
+    .field input[type=text], .field textarea {
+      width: 100%; padding: 11px 13px; border-radius: 11px; border: 1.5px solid rgba(28,20,18,0.16);
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem; background: #fff; color: var(--dark);
+      line-height: 1.55; resize: vertical;
+    }
+    .field input[type=text]:focus, .field textarea:focus { outline: none; border-color: var(--coral); }
+    .field .hint { font-size: 0.76rem; color: rgba(28,20,18,0.5); margin-top: 5px; }
+    .field.changed > label::after {
+      content: '• edited'; color: var(--gold); font-weight: 700; font-size: 0.72rem;
+      margin-left: 8px; letter-spacing: 0.02em;
+    }
+
+    .prod-card { padding: 16px 16px 6px; margin-bottom: 14px; }
+    .prod-card .prod-name { font-weight: 700; font-size: 1rem; margin: 0 0 12px; }
+
+    /* Sticky save bar */
+    .savebar {
+      position: sticky; bottom: 16px; z-index: 5; margin-top: 28px;
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      padding: 14px 16px; border-radius: 16px;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+      border: 1px solid rgba(28,20,18,0.08); box-shadow: 0 6px 22px rgba(28,20,18,0.12);
+    }
+    .toast { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-weight: 600; font-size: 0.92rem; display: none; }
+    .toast.show { display: block; }
+    .toast.good { background: rgba(33,168,161,0.12); color: #14756f; }
+    .toast.bad  { background: rgba(252,58,60,0.12); color: #c02325; }
+
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(252,58,60,0.25); border-top-color: var(--coral); border-radius: 50%; display: inline-block; animation: spin 0.7s linear infinite; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 1.6s; } }
+
+    .loading { text-align: center; color: rgba(28,20,18,0.5); padding: 30px 0; }
+    footer.note { text-align: center; color: rgba(28,20,18,0.4); font-size: 0.8rem; margin-top: 30px; }
+    a { color: var(--coral); }
+  </style>
+</head>
+<body>
+  <div class="blob coral"></div>
+  <div class="blob teal"></div>
+
+  <div class="wrap">
+    <header class="page">
+      <span class="eyebrow">Hooray HQ · Text editor</span>
+      <h1 class="title font-display">Edit website text</h1>
+      <p class="subtitle">Tweak the wording on your site. Leave a box on its original text to keep the default.</p>
+    </header>
+
+    <!-- Password gate -->
+    <div id="gate" class="card">
+      <label for="pw">Enter the password</label>
+      <div class="pw-row">
+        <input id="pw" type="password" autocomplete="current-password" placeholder="Password" />
+        <button id="unlock" class="btn-coral" style="padding:13px 20px;">Unlock</button>
+      </div>
+      <div id="gate-msg" class="toast bad"></div>
+    </div>
+
+    <!-- App -->
+    <main id="app">
+      <div id="form" aria-live="polite"><div class="loading"><span class="spinner"></span> Loading your text…</div></div>
+
+      <div class="savebar">
+        <button id="save" class="btn-coral">Save changes</button>
+        <span id="dirty-note" style="font-size:0.85rem;color:rgba(28,20,18,0.55);"></span>
+        <span style="flex:1"></span>
+        <button id="lock" class="btn-ghost" type="button">Lock</button>
+      </div>
+      <div id="toast" class="toast"></div>
+
+      <footer class="note">Saved changes appear on the website within about a minute. Only you can see this page.</footer>
+    </main>
+  </div>
+
+  <script>
+    const PW_KEY = 'hoorayGalleryPw'; // shared with the photo manager — unlock once, use both
+    const $ = (id) => document.getElementById(id);
+    let password = sessionStorage.getItem(PW_KEY) || '';
+
+    let registry = [];          // homepage fields from data/editable.json
+    let productList = [];       // [{ id, name, subtitle, description, includes }]
+    let overrides = { fields: {}, products: {} }; // currently-saved overrides
+
+    // ---------- gate ----------
+    function showApp() {
+      $('gate').style.display = 'none';
+      $('app').style.display = 'block';
+      loadAll();
+    }
+    if (password) showApp();
+
+    $('unlock').addEventListener('click', tryUnlock);
+    $('pw').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
+    function tryUnlock() {
+      const v = $('pw').value.trim();
+      if (!v) return;
+      password = v;
+      sessionStorage.setItem(PW_KEY, v);
+      $('gate-msg').classList.remove('show');
+      showApp();
+    }
+    $('lock').addEventListener('click', () => {
+      sessionStorage.removeItem(PW_KEY);
+      location.reload();
+    });
+    function rejectPassword() {
+      sessionStorage.removeItem(PW_KEY);
+      password = '';
+      $('app').style.display = 'none';
+      $('gate').style.display = 'flex';
+      $('gate-msg').textContent = "That password didn't work — try again.";
+      $('gate-msg').classList.add('show');
+    }
+
+    // ---------- load registry, products & current overrides ----------
+    async function loadAll() {
+      try {
+        const [reg, prods, content] = await Promise.all([
+          fetch('data/editable.json', { cache: 'no-store' }).then((r) => r.json()),
+          fetch('data/products.json', { cache: 'no-store' }).then((r) => r.json()),
+          fetch('/api/content-get', { cache: 'no-store' }).then((r) => r.json()).catch(() => ({ content: {} })),
+        ]);
+        registry = (reg && reg.fields) || [];
+        productList = [...((prods && prods.grabAndGo) || []), ...((prods && prods.diyKits) || [])];
+        const c = (content && content.content) || {};
+        overrides = { fields: c.fields || {}, products: c.products || {} };
+        renderForm();
+      } catch (e) {
+        $('form').innerHTML = '<div class="toast bad show">Could not load the text to edit. Refresh and try again.</div>';
+      }
+    }
+
+    function el(tag, attrs = {}, html) {
+      const n = document.createElement(tag);
+      for (const k in attrs) n.setAttribute(k, attrs[k]);
+      if (html != null) n.innerHTML = html;
+      return n;
+    }
+
+    function renderForm() {
+      const form = $('form');
+      form.innerHTML = '';
+
+      // --- Homepage / page copy, grouped by section (registry order preserved) ---
+      const sections = [];
+      const bySection = {};
+      for (const f of registry) {
+        if (!bySection[f.section]) { bySection[f.section] = []; sections.push(f.section); }
+        bySection[f.section].push(f);
+      }
+      for (const section of sections) {
+        const wrap = el('div', { class: 'section' });
+        wrap.appendChild(el('div', { class: 'section-title' }, escapeHtml(section)));
+        for (const f of bySection[section]) {
+          const current = (typeof overrides.fields[f.key] === 'string') ? overrides.fields[f.key] : f.default;
+          wrap.appendChild(renderField('f__' + f.key, f.label, current, f.default, f.multiline));
+        }
+        form.appendChild(wrap);
+      }
+
+      // --- Products (text only — price is set in the catalogue, not here) ---
+      if (productList.length) {
+        const wrap = el('div', { class: 'section' });
+        wrap.appendChild(el('div', { class: 'section-title' }, 'Products · names & descriptions'));
+        for (const p of productList) {
+          const ov = overrides.products[p.id] || {};
+          const card = el('div', { class: 'card prod-card' });
+          card.appendChild(el('div', { class: 'prod-name' }, escapeHtml(p.name || p.id)));
+          card.appendChild(renderField('p__' + p.id + '__name', 'Name', pick(ov.name, p.name), p.name || '', false));
+          card.appendChild(renderField('p__' + p.id + '__subtitle', 'Subtitle', pick(ov.subtitle, p.subtitle), p.subtitle || '', false));
+          card.appendChild(renderField('p__' + p.id + '__description', 'Description', pick(ov.description, p.description), p.description || '', true));
+          const incCur = Array.isArray(ov.includes) ? ov.includes : (p.includes || []);
+          card.appendChild(renderField('p__' + p.id + '__includes', "What's included (one per line)", incCur.join('\n'), (p.includes || []).join('\n'), true));
+          wrap.appendChild(card);
+        }
+        form.appendChild(wrap);
+      }
+
+      updateDirty();
+    }
+
+    function pick(override, fallback) {
+      return (typeof override === 'string') ? override : (fallback || '');
+    }
+
+    function renderField(id, label, value, def, multiline) {
+      const field = el('div', { class: 'field' });
+      const lab = el('label', { for: id }, escapeHtml(label));
+      field.appendChild(lab);
+      let input;
+      if (multiline) {
+        input = el('textarea', { id, rows: '3' });
+        input.value = value || '';
+      } else {
+        input = el('input', { type: 'text', id });
+        input.value = value || '';
+      }
+      input.dataset.default = def == null ? '' : def;
+      input.addEventListener('input', () => { markChanged(field, input); updateDirty(); });
+      field.appendChild(input);
+      markChanged(field, input);
+      return field;
+    }
+
+    function markChanged(field, input) {
+      const changed = (input.value || '') !== (input.dataset.default || '');
+      field.classList.toggle('changed', changed);
+    }
+
+    function updateDirty() {
+      const n = document.querySelectorAll('#form .field.changed').length;
+      $('dirty-note').textContent = n ? (n + (n === 1 ? ' field edited' : ' fields edited')) : 'No changes from the defaults';
+    }
+
+    // ---------- save ----------
+    // Only values that differ from the default are stored, so unedited text keeps
+    // showing the live site default even if it's updated in the code later.
+    $('save').addEventListener('click', async () => {
+      const fields = {};
+      const products = {};
+
+      for (const f of registry) {
+        const input = $('f__' + f.key);
+        if (!input) continue;
+        const v = input.value;
+        if (v !== f.default) fields[f.key] = v;
+      }
+
+      for (const p of productList) {
+        const out = {};
+        const name = $('p__' + p.id + '__name').value;
+        const subtitle = $('p__' + p.id + '__subtitle').value;
+        const description = $('p__' + p.id + '__description').value;
+        const includes = $('p__' + p.id + '__includes').value.split('\n').map((s) => s.trim()).filter(Boolean);
+        if (name !== (p.name || '')) out.name = name;
+        if (subtitle !== (p.subtitle || '')) out.subtitle = subtitle;
+        if (description !== (p.description || '')) out.description = description;
+        if (JSON.stringify(includes) !== JSON.stringify(p.includes || [])) out.includes = includes;
+        if (Object.keys(out).length) products[p.id] = out;
+      }
+
+      const content = { fields, products };
+
+      const btn = $('save');
+      btn.disabled = true;
+      const label = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span> Saving…';
+      toast('', '');
+      try {
+        const r = await fetch('/api/content-save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password, content }),
+        });
+        if (r.status === 401) { rejectPassword(); return; }
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) throw new Error(j.error || 'save failed');
+        overrides = content; // reflect what's now live
+        toast('Saved! Your changes appear on the website within about a minute 🎉', 'good');
+      } catch (e) {
+        toast('Could not save your changes. Check your connection and try again.', 'bad');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    });
+
+    // ---------- helpers ----------
+    function toast(msg, kind) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.className = 'toast' + (msg ? ' show ' + (kind === 'good' ? 'good' : 'bad') : '');
+    }
+    function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  </script>
+</body>
+</html>

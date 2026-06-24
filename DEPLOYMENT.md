@@ -56,3 +56,28 @@ npx wrangler pages dev --port 8788
 
 Photos Hannah adds appear on the live site within ~1 minute (the list response is edge-cached
 for 60s); individual images are cached for a year and never need busting (keys are unique).
+
+## Website text editor (Hannah's copy editor)
+
+Hannah can edit the site's marketing copy and product text at **`/admin`** (a private, no-index
+page). It reuses the **same password** as the photo manager (`GALLERY_UPLOAD_PASSWORD`) and the
+**same R2 bucket** (`GALLERY_BUCKET`) — no new infrastructure.
+
+How it works (override model — defaults can never be lost):
+
+- Editable copy stays hardcoded in `index.html` as the fallback; product text stays in
+  `data/products.json`. Hannah's edits are saved as a small JSON object in R2 at
+  **`content/site.json`** and layered over those defaults on page load. Empty/failed fetch →
+  the original copy shows.
+- Only values she changes from the default are stored. So a `git push` that updates the default
+  wording of a field she *hasn't* touched will show through; a field she *has* edited keeps her
+  version until she changes it again (or resets the box back to the default text).
+- **Prices, variants, FAQ and SEO structured data are never editable here** — those remain code edits.
+- **Functions:** `functions/api/content-get.js` (public, edge-cached 60s) and
+  `functions/api/content-save.js` (password-gated write).
+- **Editable homepage fields** are registered in `data/editable.json` (each has a `key` matching a
+  `data-edit="…"` attribute in `index.html`). Add a field by tagging the element and adding a
+  registry entry.
+
+Like the gallery, saved text appears on the live site within ~1 minute. Local development needs
+the R2 binding, so use `npx wrangler pages dev --port 8788` (not `serve.mjs`).

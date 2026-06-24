@@ -1,0 +1,41 @@
+{
+  "_comment": "Registry of editable site text for the private /admin editor. Each entry: 'key' matches a data-edit=\"key\" attribute in index.html; 'default' is the original copy (shown in the editor and used to restore); 'label' + 'section' organise the editor UI; 'multiline' picks a textarea vs a single-line input. Hannah's saved edits live in R2 (content/site.json) and are layered over these defaults at page load — if empty, the hardcoded HTML copy shows. Editing a field with inline emphasis (e.g. the bio) replaces it with plain text. Prices, FAQ and structured data are NOT edited here.",
+  "fields": [
+    { "key": "home.hero.subtitle", "section": "Homepage · Hero", "label": "Hero tagline", "multiline": false, "default": "Balloon garlands and custom themed installations." },
+
+    { "key": "home.offer.heading", "section": "Homepage · What we offer", "label": "Section heading", "multiline": false, "default": "What we offer" },
+    { "key": "home.offer.gag.desc", "section": "Homepage · What we offer", "label": "Grab & Go card description", "multiline": true, "default": "Click & collect, but balloons! Pick your colours and size, order online, and collect ready to celebrate." },
+    { "key": "home.offer.custom.desc", "section": "Homepage · What we offer", "label": "Custom card description", "multiline": true, "default": "Have it how you like it. We design, deliver, and install a statement display tailored to your celebration." },
+
+    { "key": "home.how.heading", "section": "Homepage · How it works", "label": "Section heading", "multiline": false, "default": "How it works" },
+    { "key": "home.how.step1.title", "section": "Homepage · How it works", "label": "Step 1 title", "multiline": false, "default": "Choose your style" },
+    { "key": "home.how.step1.desc", "section": "Homepage · How it works", "label": "Step 1 description", "multiline": true, "default": "Pick a ready-to-collect Grab & Go piece, or request a quote for a fully custom themed installation." },
+    { "key": "home.how.step2.title", "section": "Homepage · How it works", "label": "Step 2 title", "multiline": false, "default": "Pick your colours" },
+    { "key": "home.how.step2.desc", "section": "Homepage · How it works", "label": "Step 2 description", "multiline": true, "default": "Choose from our curated colour palettes — or go custom. We'll match your vibe as best we can." },
+    { "key": "home.how.step3.title", "section": "Homepage · How it works", "label": "Step 3 title", "multiline": false, "default": "Celebrate!" },
+    { "key": "home.how.step3.desc", "section": "Homepage · How it works", "label": "Step 3 description", "multiline": true, "default": "Pick up your order or have us deliver and set up. All that's left is to enjoy the moment." },
+
+    { "key": "home.gallery.heading", "section": "Homepage · Our work", "label": "Section heading", "multiline": false, "default": "Our work" },
+
+    { "key": "home.instagram.heading", "section": "Homepage · Instagram", "label": "Section heading", "multiline": false, "default": "Follow the fun on Instagram" },
+    { "key": "home.instagram.desc", "section": "Homepage · Instagram", "label": "Description", "multiline": true, "default": "See our latest setups, behind-the-scenes peeks and party inspo — and tag us in your celebration so we can cheer you on!" },
+
+    { "key": "home.testimonials.heading", "section": "Homepage · Testimonials", "label": "Section heading", "multiline": false, "default": "See what people are saying about us" },
+
+    { "key": "home.about.heading", "section": "Homepage · About Hannah", "label": "Section heading", "multiline": false, "default": "Hi, I'm Hannah!" },
+    { "key": "home.about.bio1", "section": "Homepage · About Hannah", "label": "Bio paragraph 1", "multiline": true, "default": "For years, I've had the privilege of working with youth centres and churches, creating fun and inviting environments for kids and young people. Whether it's through a themed event or a decorated space I've always loved finding ways to bring excitement and energy to a room." },
+    { "key": "home.about.bio2", "section": "Homepage · About Hannah", "label": "Bio paragraph 2", "multiline": true, "default": "Since having my own kids, I've loved creating special celebrations for them and their friends. From themed backdrops to oversized balloon garlands, I'm constantly dreaming up ways to bring their ideas to life, creating party spaces that make them walk in and think, \"Wow, this is the best day ever!\"" },
+    { "key": "home.about.bio3", "section": "Homepage · About Hannah", "label": "Bio paragraph 3", "multiline": true, "default": "That love for celebrating life's special moments inspired me to start Hooray HQ. My hope is that through this business, I can help make your birthday, anniversary, graduation, baby shower, or special event feel just that little bit more elevated. Because I know the moments that matter most deserve a HOORAY!" },
+
+    { "key": "home.faq.heading", "section": "Homepage · FAQ", "label": "Section heading", "multiline": false, "default": "Common questions" },
+
+    { "key": "gag.heading", "section": "Grab & Go page", "label": "Page heading", "multiline": false, "default": "Grab & Go" },
+    { "key": "gag.intro", "section": "Grab & Go page", "label": "Intro paragraph", "multiline": true, "default": "Think click & collect, but balloons! Fuss-free styling with no complex install — pick your colours, choose your size, and collect ready to celebrate." },
+
+    { "key": "custom.heading", "section": "Custom page", "label": "Page heading", "multiline": false, "default": "Have it how you like it" },
+    { "key": "custom.intro", "section": "Custom page", "label": "Intro paragraph", "multiline": true, "default": "Custom garlands, themed event styling, and oversized statement installations designed to make your celebration unforgettable — from birthdays and baby showers to grand openings and anniversaries. Tell us your vision and we'll bring it to life." },
+
+    { "key": "contact.heading", "section": "Contact page", "label": "Page heading", "multiline": false, "default": "Get in touch" },
+    { "key": "contact.intro", "section": "Contact page", "label": "Intro paragraph", "multiline": true, "default": "Have a question, or want to chat about your celebration? Drop us a message and we'll get right back to you." }
+  ]
+}
