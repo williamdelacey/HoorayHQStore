@@ -24,6 +24,28 @@ Pushing `main` to `origin` deploys the store via Cloudflare Pages.
 > holding site. That has been removed and the store remote (formerly `cloudflare`) was renamed
 > to `origin`. There is no longer any holding-site remote to push to or worry about.
 
+## ⚠️ Editing brand assets in place (logos, `/brand/*`, `/images/*`) — bump the version
+
+Anything under `/brand/*` and `/images/*` is served with a **1-year `immutable` cache**
+(see [`_headers`](_headers)). That's great for performance but means **editing a file in place
+will NOT show up live** — Cloudflare's edge and every returning visitor's browser keep serving
+the old bytes for a year and never revalidate, because the filename (URL) is unchanged.
+
+If you change the *contents* of a logo or image without renaming it, you must change the URL so
+caches treat it as a new asset. Append/bump a version query string everywhere it's referenced:
+
+```html
+<img src="brand/Logo/Hooray-Logo-white.svg?v=3" ...>   <!-- was ?v=2 -->
+```
+
+`index.html` itself is uncached (`max-age=0, must-revalidate`), so the new reference propagates
+immediately once the build finishes — no dashboard purge needed.
+
+The logos are referenced in `index.html` (header `<img>`, footer `<img>`, and the schema.org
+`"logo"` URL in the JSON-LD `<head>` block). Current version: **`?v=2`**. Renaming the file to a
+brand-new filename works too, and avoids the issue entirely. New visitors are unaffected either
+way; this only matters for making an *in-place edit* visible.
+
 ## Gallery uploads (Hannah's photo manager)
 
 The store gallery is managed at **`/upload`** (a private, no-index page). Photos are
