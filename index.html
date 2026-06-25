@@ -635,7 +635,7 @@
     <section style="padding:5rem 1.5rem;max-width:1100px;margin:0 auto;">
       <div style="display:grid;grid-template-columns:0.85fr 1fr;gap:3rem;align-items:center;" class="about-grid">
         <div style="position:relative;max-width:380px;margin:0 auto;">
-          <img src="images/Hannah/Hannah-Bio.png" alt="Hannah, the face behind Hooray HQ" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 45px rgba(252,58,60,0.15);" />
+          <img src="images/Hannah/Hannah-Bio2.jpg" alt="Hannah, the face behind Hooray HQ" style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;box-shadow:0 20px 45px rgba(252,58,60,0.15);" />
           <div style="position:absolute;bottom:-14px;right:-14px;background:var(--coral);color:#fff;font-family:'Luckiest Guy',cursive;font-size:0.9rem;letter-spacing:0.03em;padding:0.55rem 1rem;border-radius:12px;box-shadow:0 8px 20px rgba(252,58,60,0.35);transform:rotate(-3deg);">Hooray!</div>
         </div>
         <div>
@@ -663,7 +663,7 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:3rem;margin-bottom:3rem;">
           <div>
             <img src="brand/Logo/Hooray-Logo-white.svg" alt="Hooray HQ" style="height:52px;width:auto;margin-bottom:1rem;" />
-            <p style="color:rgba(255,255,255,0.65);line-height:1.7;font-size:0.9rem;margin:0;">Parties made easy, memories made bright.<br>Whangaparaoa, Auckland, NZ</p>
+            <p style="color:rgba(255,255,255,0.65);line-height:1.7;font-size:0.9rem;margin:0;">Whangaparaoa, Auckland, NZ</p>
           </div>
           <div>
             <h4 style="font-family:'Luckiest Guy',cursive;font-size:1rem;margin:0 0 1rem;letter-spacing:0.05em;color:rgba(255,255,255,0.5);text-transform:uppercase;">Explore</h4>
@@ -688,7 +688,6 @@
           <div style="display:flex;gap:1.25rem;align-items:center;">
             <a href="terms.html" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Terms</a>
             <a href="privacy.html" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Privacy</a>
-            <p style="margin:0;font-size:0.8rem;color:rgba(255,255,255,0.4);">Made with love in Whangaparaoa 🎈</p>
           </div>
         </div>
       </div>
@@ -944,7 +943,7 @@
             </div>
 
             <button class="btn-coral" type="submit" style="width:100%;padding:1rem;font-size:1rem;" id="place-order-btn">Continue to Payment</button>
-            <p style="font-size:0.75rem;color:#9b8a82;text-align:center;margin:0.75rem 0 0;">You'll be taken to Stripe's secure checkout to pay. Delivery fees (if any) are confirmed separately.</p>
+            <p style="font-size:0.75rem;color:#9b8a82;text-align:center;margin:0.75rem 0 0;">You'll be taken to Stripe's secure checkout to pay. A flat $50 delivery fee applies within 20km of Whangaparaoa, included at checkout.</p>
           </form>
         </div>
 
@@ -1096,6 +1095,9 @@ function formatPrice(n) {
 const NUMBER_LETTER_FOIL_PRICE = 10;
 const THEMED_FOIL_PRICE = 10;
 
+// Flat-rate delivery fee for Grab & Go orders (mirrors create-checkout-session.js).
+const DELIVERY_FEE = 50;
+
 // Server-authoritative price is recomputed at checkout; this mirrors it for display.
 function computeUnitPrice(product, variant, foilNLOn, foilThemedOn) {
   let price = variant ? Number(variant.price) : Number(product.price);
@@ -1202,9 +1204,12 @@ function updateCheckoutSummary() {
       <div style="font-weight:700;font-size:0.875rem;">${formatPrice(item.price * item.qty)}</div>
     </div>
   `).join('');
-  const total = cartTotal();
-  if (subtotalEl) subtotalEl.textContent = formatPrice(total);
-  if (totalEl) totalEl.textContent = formatPrice(total);
+  const subtotal = cartTotal();
+  const deliveryFee = currentFulfilment === 'delivery' ? DELIVERY_FEE : 0;
+  const deliveryEl = document.getElementById('summary-delivery');
+  if (deliveryEl) deliveryEl.textContent = formatPrice(deliveryFee);
+  if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+  if (totalEl) totalEl.textContent = formatPrice(subtotal + deliveryFee);
 }
 
 // ===================== NAVIGATION =====================
@@ -1439,7 +1444,7 @@ function renderModalBody() {
         <span style="flex:1;">
           <strong style="font-size:0.875rem;">${p.foilLabel || 'Foil number or letter'}</strong>
           <span style="color:var(--coral);font-weight:700;font-size:0.8rem;"> ${p.numberLetterFoilIncluded ? '· included' : '· +$10'}</span>
-          ${p.numberLetterFoilIncluded ? `<span style="display:block;font-size:0.72rem;color:#9b8a82;">Included with this product — just tell us which one.</span>` : ''}
+          ${p.numberLetterFoilIncluded ? `<span style="display:block;font-size:0.72rem;color:#9b8a82;">${p.foilIncludedNote || 'Included with this product — just tell us which one.'}</span>` : ''}
         </span>
       </label>
       ${foilNL.on ? `<input class="field" id="foil-nl-text" type="text" maxlength="40" value="${(foilNL.text || '').replace(/"/g, '&quot;')}" oninput="onFoilTextInput()" placeholder="${p.foilPlaceholder || 'e.g. the number 5, or the letter A'}" style="margin:0.5rem 0 0.9rem;" />` : '<div style="height:0.6rem;"></div>'}
@@ -1565,13 +1570,14 @@ function setFulfilment(type) {
     if (feeRow) feeRow.style.display = 'none';
   } else {
     btnDelivery.classList.add('active'); btnPickup.classList.remove('active');
-    note.textContent = 'We deliver to Whangaparaoa and greater Auckland. Delivery fee quoted separately.';
+    note.textContent = 'Flat-rate delivery: $50 within 20km of Whangaparaoa.';
     if (addrCard) addrCard.style.display = 'block';
     if (dateLabel) dateLabel.textContent = 'Delivery date';
     if (feeRow) { feeRow.style.display = 'flex'; feeRow.style.justifyContent = 'space-between'; feeRow.style.alignItems = 'center'; feeRow.style.marginBottom = '0.5rem'; }
     const addrInput = document.getElementById('delivery-address');
     if (addrInput) addrInput.required = true;
   }
+  updateCheckoutSummary();
 }
 
 // ===================== DATE PICKERS =====================
@@ -1667,7 +1673,7 @@ async function submitCheckout(e) {
     date: data.date,
     fulfilment: currentFulfilment,
     items: cart,
-    total: cartTotal(),
+    total: cartTotal() + (currentFulfilment === 'delivery' ? DELIVERY_FEE : 0),
   }));
 
   try {

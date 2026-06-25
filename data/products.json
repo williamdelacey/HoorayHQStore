@@ -30,15 +30,15 @@
         }
       ],
       "description": "Our classic colour-customisable garland, priced per size. Pick up to three colours and the length to suit your space — the perfect finishing touch behind a party table or backdrop.",
-      "image": "images/products/Balloon Garland/Balloon Garland1.png",
+      "image": "images/products/Balloon Garland/Balloon Garland2.png",
       "includes": [
         "Up to 3 colours",
         "Command strips",
         "Install instructions"
       ],
       "images": [
-        "images/products/Balloon Garland/Balloon Garland1.png",
-        "images/products/Balloon Garland/Balloon Garland2.png"
+        "images/products/Balloon Garland/Balloon Garland2.png",
+        "images/products/Balloon Garland/Balloon Garland1.png"
       ]
     },
     {
@@ -48,14 +48,14 @@
       "price": 80,
       "colourLimit": 2,
       "description": "A petite garland finished with a foil number or letter. Pick up to two colours.",
-      "image": "images/products/Mini Garland/Mini Garland.jpg",
+      "image": "images/products/Mini Garland/MiniGarland4.png",
       "includes": [
         "Up to 2 colours",
         "Foil number or letter included",
         "Command strips"
       ],
       "images": [
-        "images/products/Mini Garland/Mini Garland.jpg"
+        "images/products/Mini Garland/MiniGarland4.png"
       ],
       "numberLetterFoilIncluded": true,
       "hideThemedFoil": true
@@ -67,16 +67,20 @@
       "price": 250,
       "colourLimit": 3,
       "description": "A freestanding garland you can place anywhere — perfect for the present table or to elevate a backdrop or entrance area. Pick up to three colours and move it wherever you like.",
-      "image": "images/products/Freestanding Balloon Garland/freestandinggarland.jpg",
+      "image": "images/products/Freestanding Balloon Garland/FreestandingBalloonGarland4.png",
       "includes": [
         "Up to 3 colours",
         "Freestanding — no wall needed",
-        "Optional foil add-on"
+        "3 foils included"
       ],
       "images": [
-        "images/products/Freestanding Balloon Garland/freestandinggarland.jpg",
-        "images/products/Freestanding Balloon Garland/freestandinggarland2.jpg"
-      ]
+        "images/products/Freestanding Balloon Garland/FreestandingBalloonGarland4.png"
+      ],
+      "numberLetterFoilIncluded": true,
+      "hideThemedFoil": true,
+      "foilLabel": "3 foils",
+      "foilPlaceholder": "Tell us which 3 foils you'd like — e.g. the number 5, a star, the letter A",
+      "foilIncludedNote": "3 foils included — just tell us which three you'd like."
     },
     {
       "id": "gag-004",
@@ -107,15 +111,15 @@
       "price": 200,
       "colourLimit": 3,
       "description": "A freestanding arch to frame your celebration — a true statement piece you can position wherever you need it. Pick up to three colours.",
-      "image": "images/products/Freestanding Arch/Arch1.jpg",
+      "image": "images/products/Freestanding Arch/Arch2.jpg",
       "includes": [
         "Up to 3 colours",
         "Freestanding — no wall needed",
         "Optional foil add-on"
       ],
       "images": [
-        "images/products/Freestanding Arch/Arch1.jpg",
-        "images/products/Freestanding Arch/Arch2.jpg"
+        "images/products/Freestanding Arch/Arch2.jpg",
+        "images/products/Freestanding Arch/Arch1.jpg"
       ]
     }
   ],
@@ -171,10 +175,10 @@
       "id": "classic-pink",
       "name": "Classic Pink",
       "swatches": [
-        "#FFB6C1",
-        "#FF69B4",
-        "#FFD6E0",
-        "#FFFFFF"
+        {"tuftexName": "Romey (P)", "hex": "#eec9cc"},
+        {"tuftexName": "Baby Pink", "hex": "#eebecc"},
+        {"tuftexName": "Shimmering Pink (M)", "hex": "#eabac9"},
+        {"tuftexName": "Pink", "hex": "#edc0cd"}
       ]
     },
     {

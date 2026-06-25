@@ -1,5 +1,8 @@
 import Stripe from 'stripe';
 
+// Flat-rate delivery fee for Grab & Go orders (mirrors index.html's DELIVERY_FEE).
+const DELIVERY_FEE = 50;
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -84,6 +87,19 @@ export async function onRequestPost(context) {
         quantity: Math.max(1, Math.min(Number(item.qty) || 1, 999)),
       };
     });
+
+    // Flat-rate delivery fee, decided server-side from the fulfilment field —
+    // never trust a delivery charge (or lack thereof) sent by the browser.
+    if (data.fulfilment === 'delivery') {
+      lineItems.push({
+        price_data: {
+          currency: 'nzd',
+          product_data: { name: 'Delivery (flat rate, within 20km of Whangaparaoa)' },
+          unit_amount: DELIVERY_FEE * 100,
+        },
+        quantity: 1,
+      });
+    }
 
     const metadata = {
       customer_name: (customer.name || '').slice(0, 480),
