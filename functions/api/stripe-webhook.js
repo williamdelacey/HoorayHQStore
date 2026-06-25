@@ -57,6 +57,51 @@ async function createOrderInZoho(env, order, sessionId) {
   if (!ok) throw new Error((json.data && json.data[0] && json.data[0].message) || json.message || `HTTP ${res.status}`);
 }
 
+// ---- Meta Conversions API helper (kept local; no shared-module deps) ----
+async function sha256Hex(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Send a server-side event to Meta. event_id must match the browser pixel event
+// so Meta de-duplicates the two. No-op until META_CAPI_TOKEN is configured.
+async function sendMetaEvent(env, ev) {
+  if (!env.META_CAPI_TOKEN) return;
+  const pixelId = env.META_PIXEL_ID || '1285412236732839';
+
+  const user = {};
+  if (ev.email) user.em = [await sha256Hex(ev.email.trim().toLowerCase())];
+  if (ev.phone) {
+    const digits = String(ev.phone).replace(/\D/g, '');
+    if (digits) user.ph = [await sha256Hex(digits)];
+  }
+  if (ev.clientIp) user.client_ip_address = ev.clientIp;
+  if (ev.userAgent) user.client_user_agent = ev.userAgent;
+  if (ev.fbp) user.fbp = ev.fbp;
+  if (ev.fbc) user.fbc = ev.fbc;
+
+  const body = {
+    data: [{
+      event_name: ev.name,
+      event_time: ev.time || Math.floor(Date.now() / 1000),
+      event_id: ev.eventId,
+      action_source: 'website',
+      event_source_url: ev.sourceUrl,
+      user_data: user,
+      custom_data: ev.customData,
+    }],
+  };
+
+  const res = await fetch(
+    `https://graph.facebook.com/v21.0/${pixelId}/events?access_token=${encodeURIComponent(env.META_CAPI_TOKEN)}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+  );
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`Meta CAPI ${res.status}: ${detail.slice(0, 300)}`);
+  }
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -125,6 +170,21 @@ export async function onRequestPost(context) {
     } catch (e) {
       console.error('Zoho order create failed:', e);
     }
+
+    // Server-side Purchase to Meta (Conversions API). Uses the Stripe session id
+    // as event_id — the same id the browser pixel sends — so Meta de-dupes the
+    // two and counts one purchase. Fire-and-forget; never blocks the 200 to Stripe.
+    context.waitUntil(
+      sendMetaEvent(env, {
+        name: 'Purchase',
+        eventId: session.id,
+        time: event.created,
+        email: order.customer_email,
+        phone: order.customer_phone,
+        sourceUrl: 'https://hoorayhq.co.nz/?paid=1',
+        customData: { currency: 'NZD', value: order.total },
+      }).catch((e) => console.error('Meta CAPI Purchase failed:', e))
+    );
   }
 
   return new Response(JSON.stringify({ received: true }), {

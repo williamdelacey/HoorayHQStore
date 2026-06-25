@@ -82,6 +82,56 @@ function buildLead(data) {
   return lead;
 }
 
+// ---- Meta Conversions API helper (kept local; no shared-module deps) ----
+async function sha256Hex(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getCookie(request, name) {
+  const m = (request.headers.get('Cookie') || '').match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return m ? decodeURIComponent(m[1]) : undefined;
+}
+
+// Server-side event to Meta. event_id matches the browser pixel event so Meta
+// de-duplicates the two. No-op until META_CAPI_TOKEN is configured.
+async function sendMetaEvent(env, ev) {
+  if (!env.META_CAPI_TOKEN) return;
+  const pixelId = env.META_PIXEL_ID || '1285412236732839';
+
+  const user = {};
+  if (ev.email) user.em = [await sha256Hex(ev.email.trim().toLowerCase())];
+  if (ev.phone) {
+    const digits = String(ev.phone).replace(/\D/g, '');
+    if (digits) user.ph = [await sha256Hex(digits)];
+  }
+  if (ev.clientIp) user.client_ip_address = ev.clientIp;
+  if (ev.userAgent) user.client_user_agent = ev.userAgent;
+  if (ev.fbp) user.fbp = ev.fbp;
+  if (ev.fbc) user.fbc = ev.fbc;
+
+  const body = {
+    data: [{
+      event_name: ev.name,
+      event_time: Math.floor(Date.now() / 1000),
+      event_id: ev.eventId,
+      action_source: 'website',
+      event_source_url: ev.sourceUrl,
+      user_data: user,
+      custom_data: ev.customData,
+    }],
+  };
+
+  const res = await fetch(
+    `https://graph.facebook.com/v21.0/${pixelId}/events?access_token=${encodeURIComponent(env.META_CAPI_TOKEN)}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+  );
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`Meta CAPI ${res.status}: ${detail.slice(0, 300)}`);
+  }
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
   try {
@@ -108,6 +158,24 @@ export async function onRequestPost(context) {
       const detail = (json.data && json.data[0] && json.data[0].message) || json.message || res.status;
       throw new Error(`Zoho CRM error: ${detail}`);
     }
+
+    // Server-side Lead to Meta (Conversions API), de-duped with the browser Lead
+    // via the shared event_id. Browser→server call, so we can attach the _fbp/_fbc
+    // cookies + IP + UA for strong match quality. Fire-and-forget.
+    context.waitUntil(
+      sendMetaEvent(env, {
+        name: 'Lead',
+        eventId: data.event_id,
+        email: data.email,
+        phone: data.phone,
+        clientIp: request.headers.get('CF-Connecting-IP') || undefined,
+        userAgent: request.headers.get('User-Agent') || undefined,
+        fbp: getCookie(request, '_fbp'),
+        fbc: getCookie(request, '_fbc'),
+        sourceUrl: request.headers.get('Referer') || 'https://hoorayhq.co.nz/',
+        customData: { content_name: data.lead_source || 'Website enquiry', currency: 'NZD' },
+      }).catch((e) => console.error('Meta CAPI Lead failed:', e))
+    );
 
     return new Response(JSON.stringify({ ok: true, id: json.data[0].details && json.data[0].details.id }), {
       status: 200,

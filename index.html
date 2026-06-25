@@ -383,7 +383,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(28,20,18,0.15); border-radius: 3px; }
   </style>
-  <script src="analytics.js" defer></script>
+  <script src="analytics.js?v=2" defer></script>
 </head>
 <body>
 <div class="bg-blobs"></div>
@@ -1002,6 +1002,12 @@
 </style>
 
 <script>
+// Tracking must NEVER break the store. analytics.js (which defines hqFbq for the
+// Meta Pixel) is a deferred, separately-cached file — if it's missing, blocked,
+// or a stale cached copy, this no-op fallback keeps product/cart/checkout code
+// from throwing. The real hqFbq in analytics.js overwrites this when it loads.
+window.hqFbq = window.hqFbq || function () {};
+
 // ===================== CATALOGUE =====================
 // The catalogue now lives in data/products.json (single source of truth for
 // both this page and the Stripe checkout function). To add/edit a product or
@@ -1636,14 +1642,19 @@ function initEventDatepicker() {
 // Posts an enquiry to the Zoho CRM function. `leadSource` distinguishes the
 // custom-enquiry form from the contact form. Returns true on success.
 async function postEnquiry(data, leadSource) {
+  // Shared id so the browser Lead and the server-side (Conversions API) Lead
+  // de-duplicate to a single conversion in Meta.
+  const eventId = (self.crypto && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
   const res = await fetch('/api/custom-enquiry', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...data, lead_source: leadSource }),
+    body: JSON.stringify({ ...data, lead_source: leadSource, event_id: eventId }),
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok || !json.ok) throw new Error(json.error || 'Request failed');
-  hqFbq('Lead', { content_name: leadSource, currency: 'NZD' });
+  hqFbq('Lead', { content_name: leadSource, currency: 'NZD' }, eventId);
   return true;
 }
 
