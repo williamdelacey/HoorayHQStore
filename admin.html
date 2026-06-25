@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
     :root {
       --coral:  #fc3a3c;
@@ -119,6 +121,32 @@
     .prod-card { padding: 16px 16px 6px; margin-bottom: 14px; }
     .prod-card .prod-name { font-weight: 700; font-size: 1rem; margin: 0 0 12px; }
 
+    /* Blocked dates */
+    .blocked-card { padding: 18px 18px 16px; }
+    .blocked-intro { font-size: 0.9rem; color: rgba(28,20,18,0.65); margin: 0 0 14px; line-height: 1.55; }
+    .blocked-cal { display: flex; justify-content: center; }
+    .blocked-list-wrap { margin-top: 14px; }
+    .blocked-list-wrap .lbl { font-weight: 700; font-size: 0.82rem; margin-bottom: 8px; }
+    .blocked-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .blocked-chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(252,58,60,0.1); color: #c02325; border: 1px solid rgba(252,58,60,0.2);
+      border-radius: 999px; padding: 5px 8px 5px 12px; font-weight: 600; font-size: 0.82rem;
+    }
+    .blocked-chip button {
+      border: none; background: rgba(252,58,60,0.18); color: #c02325; cursor: pointer;
+      width: 18px; height: 18px; border-radius: 50%; font-size: 0.72rem; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .blocked-chip button:hover { background: rgba(252,58,60,0.32); }
+    .blocked-chip button:focus-visible { outline: 2px solid rgba(252,58,60,0.5); outline-offset: 1px; }
+    .blocked-empty { font-size: 0.85rem; color: rgba(28,20,18,0.45); }
+
+    .flatpickr-calendar { font-family: 'Nunito', sans-serif !important; border-radius: 12px !important; box-shadow: 0 8px 30px rgba(28,20,18,0.15) !important; }
+    .flatpickr-day.selected { background: var(--coral) !important; border-color: var(--coral) !important; }
+    .flatpickr-day:hover { background: rgba(252,58,60,0.12) !important; }
+
     /* Sticky save bar */
     .savebar {
       position: sticky; bottom: 16px; z-index: 5; margin-top: 28px;
@@ -149,7 +177,7 @@
     <header class="page">
       <span class="eyebrow">Hooray HQ · Text editor</span>
       <h1 class="title font-display">Edit website text</h1>
-      <p class="subtitle">Tweak the wording on your site. Leave a box on its original text to keep the default.</p>
+      <p class="subtitle">Tweak the wording on your site and block out unavailable dates. Leave a box on its original text to keep the default.</p>
     </header>
 
     <!-- Password gate -->
@@ -186,6 +214,8 @@
     let registry = [];          // homepage fields from data/editable.json
     let productList = [];       // [{ id, name, subtitle, description, includes }]
     let overrides = { fields: {}, products: {} }; // currently-saved overrides
+    let blockedDates = [];      // ['YYYY-MM-DD', …] — dates greyed out on the booking calendars
+    let blockedPicker = null;   // the inline Flatpickr instance
 
     // ---------- gate ----------
     function showApp() {
@@ -230,6 +260,7 @@
         productList = [...((prods && prods.grabAndGo) || []), ...((prods && prods.diyKits) || [])];
         const c = (content && content.content) || {};
         overrides = { fields: c.fields || {}, products: c.products || {} };
+        blockedDates = Array.isArray(c.blocked) ? c.blocked.filter(isValidISODate) : [];
         renderForm();
       } catch (e) {
         $('form').innerHTML = '<div class="toast bad show">Could not load the text to edit. Refresh and try again.</div>';
@@ -246,6 +277,9 @@
     function renderForm() {
       const form = $('form');
       form.innerHTML = '';
+
+      // --- Blocked dates (greyed out on the booking calendars) ---
+      renderBlockedSection(form);
 
       // --- Homepage / page copy, grouped by section (registry order preserved) ---
       const sections = [];
@@ -287,6 +321,82 @@
 
     function pick(override, fallback) {
       return (typeof override === 'string') ? override : (fallback || '');
+    }
+
+    // ---------- blocked dates ----------
+    // Hannah clicks a day to block it (greyed out on the store's booking calendars),
+    // clicks again to unblock. Saved as a `blocked` array in the same content blob.
+    function renderBlockedSection(form) {
+      const wrap = el('div', { class: 'section' });
+      wrap.appendChild(el('div', { class: 'section-title' }, 'Blocked dates'));
+      const card = el('div', { class: 'card blocked-card' });
+      card.appendChild(el('p', { class: 'blocked-intro' },
+        'Click a day to block it — it turns red and shows as unavailable on the booking calendars. Click it again to unblock. Changes go live within about a minute after you Save.'));
+
+      const calHost = el('div', { class: 'blocked-cal' });
+      const calInput = el('input', { type: 'text', style: 'display:none' });
+      calHost.appendChild(calInput);
+      card.appendChild(calHost);
+
+      const listWrap = el('div', { class: 'blocked-list-wrap' });
+      listWrap.appendChild(el('div', { class: 'lbl' }, 'Currently blocked'));
+      const chips = el('div', { class: 'blocked-chips', id: 'blocked-chips' });
+      listWrap.appendChild(chips);
+      card.appendChild(listWrap);
+
+      wrap.appendChild(card);
+      form.appendChild(wrap);
+
+      blockedPicker = flatpickr(calInput, {
+        inline: true,
+        mode: 'multiple',
+        dateFormat: 'Y-m-d',
+        defaultDate: blockedDates.slice(),
+        onChange: (selected) => {
+          blockedDates = selected.map(toISODateLocal).sort();
+          renderBlockedChips();
+          updateDirty();
+        },
+      });
+      renderBlockedChips();
+    }
+
+    function renderBlockedChips() {
+      const chips = $('blocked-chips');
+      if (!chips) return;
+      chips.innerHTML = '';
+      if (!blockedDates.length) {
+        chips.appendChild(el('span', { class: 'blocked-empty' }, 'No dates blocked — every day is bookable.'));
+        return;
+      }
+      for (const iso of blockedDates) {
+        const chip = el('span', { class: 'blocked-chip' }, escapeHtml(formatHumanDate(iso)));
+        const x = el('button', { type: 'button', 'aria-label': 'Unblock ' + escapeHtml(formatHumanDate(iso)) }, '✕');
+        x.addEventListener('click', () => {
+          blockedDates = blockedDates.filter((d) => d !== iso);
+          if (blockedPicker) blockedPicker.setDate(blockedDates.slice(), false); // false = don't fire onChange
+          renderBlockedChips();
+          updateDirty();
+        });
+        chip.appendChild(x);
+        chips.appendChild(chip);
+      }
+    }
+
+    // Local YYYY-MM-DD (never UTC — toISOString() would shift the day across timezones).
+    function toISODateLocal(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+    function formatHumanDate(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const date = new Date(y, m - 1, d);
+      return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    function isValidISODate(s) {
+      return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
     }
 
     function renderField(id, label, value, def, multiline) {
@@ -345,7 +455,7 @@
         if (Object.keys(out).length) products[p.id] = out;
       }
 
-      const content = { fields, products };
+      const content = { fields, products, blocked: blockedDates.slice() };
 
       const btn = $('save');
       btn.disabled = true;

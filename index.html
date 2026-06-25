@@ -489,7 +489,7 @@
     <section class="hero-bg" style="min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 5rem;">
       <div class="fade-up" style="max-width:780px;">
         <h1 class="font-display" style="font-size:clamp(2.5rem,7.5vw,5rem);line-height:1.05;color:var(--dark);margin:0 0 1rem;text-shadow:0 1px 16px rgba(255,255,255,0.6);">
-          Cause every celebration<br>deserves a <span id="hero-hooray" style="color:var(--coral);position:relative;display:inline-block;font-size:1.18em;">Hooray!</span>
+          Every celebration<br>deserves a <span id="hero-hooray" style="color:var(--coral);position:relative;display:inline-block;font-size:1.18em;">Hooray!</span>
         </h1>
         <p data-edit="home.hero.subtitle" style="font-size:clamp(1rem,2.5vw,1.25rem);color:rgba(28,20,18,0.78);margin:0 auto 2.5rem;max-width:520px;line-height:1.65;font-weight:600;">
           Balloon garlands and custom themed installations.
@@ -1029,8 +1029,10 @@ async function loadSiteContent() {
     const j = await res.json();
     const c = (j && j.content) || {};
     SITE_CONTENT = { fields: c.fields || {}, products: c.products || {} };
+    BLOCKED_DATES = Array.isArray(c.blocked) ? c.blocked.filter(isValidISODate) : [];
   } catch {
     SITE_CONTENT = { fields: {}, products: {} };
+    BLOCKED_DATES = [];
   }
 }
 
@@ -1061,11 +1063,17 @@ function applyProductContent() {
 }
 
 // ===================== BLOCKED DATES =====================
-// Add dates here (YYYY-MM-DD) to make them unselectable in the calendar
-const BLOCKED_DATES = [
-  // Example: '2026-07-04', '2026-07-05'
-  // Add or remove dates as needed
-];
+// Dates that are unselectable in the booking calendars (YYYY-MM-DD). Hannah
+// manages these from the /admin "Blocked dates" calendar — they're saved into
+// content/site.json in R2 and loaded by loadSiteContent() below. Empty until
+// content loads; the date pickers only init on navigation, after that's done.
+let BLOCKED_DATES = [];
+
+// True only for a clean "YYYY-MM-DD" string, so junk in the saved blob can't
+// break the calendars.
+function isValidISODate(s) {
+  return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+}
 
 // ===================== CART STATE =====================
 let cart = JSON.parse(localStorage.getItem('hooray_cart') || '[]');
