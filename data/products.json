@@ -175,10 +175,10 @@
       "id": "classic-pink",
       "name": "Classic Pink",
       "swatches": [
-        {"tuftexName": "Romey (P)", "hex": "#eec9cc"},
-        {"tuftexName": "Baby Pink", "hex": "#eebecc"},
-        {"tuftexName": "Shimmering Pink (M)", "hex": "#eabac9"},
-        {"tuftexName": "Pink", "hex": "#edc0cd"}
+        "#eec9cc",
+        "#eebecc",
+        "#eabac9",
+        "#edc0cd"
       ]
     },
     {
