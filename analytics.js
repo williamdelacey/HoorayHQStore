@@ -1,12 +1,11 @@
 /*
- * Hooray HQ — Google Analytics 4.
- * Loads GA4 on every page for all visitors (NZ-only traffic; no consent banner).
- * GA4 does not log or store IP addresses, and usage data is aggregated/anonymous.
- * This is disclosed in privacy.html.
- *
- * Note: if a Meta/advertising pixel or remarketing is ever added, revisit whether
- * a consent banner is needed — advertising cookies are more sensitive than analytics.
+ * Hooray HQ — site-wide tracking (Google Analytics 4 + Meta Pixel).
+ * Loaded on every page for all visitors (NZ-only traffic; no consent banner).
+ * GA4 is aggregated/anonymous and does not store IP addresses.
+ * The Meta Pixel is an advertising cookie — both are disclosed in privacy.html (§4).
  */
+
+// ---- Google Analytics 4 ----
 (function () {
   var GA4_ID = 'G-8JETMPRH4F'; // Google Analytics 4 Measurement ID
 
@@ -21,3 +20,34 @@
   gtag('js', new Date());
   gtag('config', GA4_ID);
 })();
+
+// ---- Meta (Facebook/Instagram) Pixel ----
+// PASTE YOUR PIXEL ID BELOW. Find it in Meta Events Manager → Data sources →
+// your dataset → Settings (it's a ~15-digit number). Until it's set, the pixel
+// stays dormant and nothing is sent.
+(function () {
+  var PIXEL_ID = '1285412236732839'; // e.g. '1234567890123456'
+  if (!PIXEL_ID || PIXEL_ID === 'YOUR_PIXEL_ID') return; // not configured yet
+
+  // Standard Meta Pixel bootstrap (defines the fbq() queue synchronously).
+  !function (f, b, e, v, n, t, s) {
+    if (f.fbq) return; n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+    n.queue = []; t = b.createElement(e); t.async = !0; t.src = v;
+    s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+  }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+  window.fbq('init', PIXEL_ID);
+  window.fbq('track', 'PageView');
+})();
+
+// Null-safe wrapper so page code can fire Pixel events without crashing when the
+// pixel isn't configured (or is blocked). Optional eventId enables server-side
+// (Conversions API) de-duplication later. Usage: hqFbq('AddToCart', {...}, id)
+window.hqFbq = function (eventName, params, eventId) {
+  if (!window.fbq) return;
+  var opts = eventId ? { eventID: eventId } : undefined;
+  window.fbq('track', eventName, params || {}, opts);
+};

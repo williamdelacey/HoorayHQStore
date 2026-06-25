@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="facebook-domain-verification" content="gmdzyk3aa1v5rmvj2wsowmuyy7qwge" />
   <title>Hooray HQ — Balloon Garlands Auckland</title>
   <meta name="description" content="Balloon garland hire in Auckland — Grab & Go garlands, arches and mini stacks to collect yourself, plus custom themed installs delivered and set up. Based in Whangaparaoa." />
   <link rel="canonical" href="https://hoorayhq.co.nz/" />
@@ -1122,6 +1123,13 @@ function addToCart(item) {
   } else {
     cart.push(item);
   }
+  hqFbq('AddToCart', {
+    content_ids: [item.id],
+    content_name: item.name,
+    content_type: 'product',
+    value: (Number(item.price) || 0) * (item.qty || 1),
+    currency: 'NZD',
+  });
   saveCart();
   updateCartUI();
 }
@@ -1303,6 +1311,13 @@ function openProduct(productId, category) {
   const products = category === 'gag' ? CATALOGUE.grabAndGo : CATALOGUE.diyKits;
   activeProduct = products.find(p => p.id === productId);
   if (!activeProduct) return;
+  hqFbq('ViewContent', {
+    content_ids: [activeProduct.id],
+    content_name: activeProduct.name,
+    content_type: 'product',
+    value: Number(activeProduct.price) || 0,
+    currency: 'NZD',
+  });
   colourMode = 'preset';
   selectedPaletteId = presetPalettes()[0].id;
   selectedCustomColours = [];
@@ -1628,6 +1643,7 @@ async function postEnquiry(data, leadSource) {
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok || !json.ok) throw new Error(json.error || 'Request failed');
+  hqFbq('Lead', { content_name: leadSource, currency: 'NZD' });
   return true;
 }
 
@@ -1673,6 +1689,14 @@ async function submitCheckout(e) {
   btn.textContent = 'Redirecting to payment…';
   const form = e.target;
   const data = Object.fromEntries(new FormData(form));
+
+  hqFbq('InitiateCheckout', {
+    content_ids: cart.map(i => i.id),
+    contents: cart.map(i => ({ id: i.id, quantity: i.qty })),
+    num_items: cart.reduce((n, i) => n + (i.qty || 1), 0),
+    value: cartTotal() + (currentFulfilment === 'delivery' ? DELIVERY_FEE : 0),
+    currency: 'NZD',
+  });
 
   // Save order details now so we can render the confirmation screen
   // once Stripe redirects back here after payment.
@@ -1720,6 +1744,15 @@ function handleStripeRedirect() {
   if (params.get('paid') === '1') {
     const pending = JSON.parse(localStorage.getItem('hooray_pending_order') || 'null');
     if (pending) {
+      // eventID = Stripe session id so this de-dupes against a future
+      // server-side (Conversions API) Purchase fired from the Stripe webhook.
+      hqFbq('Purchase', {
+        content_ids: (pending.items || []).map(i => i.id),
+        contents: (pending.items || []).map(i => ({ id: i.id, quantity: i.qty })),
+        num_items: (pending.items || []).reduce((n, i) => n + (i.qty || 1), 0),
+        value: pending.total,
+        currency: 'NZD',
+      }, params.get('session_id') || undefined);
       cart = [];
       saveCart();
       localStorage.removeItem('hooray_pending_order');

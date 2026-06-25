@@ -117,8 +117,8 @@ export async function onRequestPost(context) {
       line_items: lineItems,
       customer_email: customer.email,
       metadata,
-      success_url: `${origin}/store.html?paid=1&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/store.html?canceled=1`,
+      success_url: `${origin}/?paid=1&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/?canceled=1`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
